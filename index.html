@@ -983,7 +983,7 @@
         let shareText = '';
         let reference = '';
         
-        if (!verseNum || verseNum === '') {
+        if (!verseNum || verseNum === '' || verseNum === 'undefined') {
           // Share full chapter
           reference = `${book.tamilName} ${chapterNum}`;
           shareText = `${reference}\n\n`;
@@ -991,10 +991,14 @@
             shareText += `${verseObj.verse}. ${verseObj.text}\n\n`;
           });
         } else {
-          // Share specific verse
+          // Share specific verse only
           const verseData = chapterData.verses.find(v => v.verse == verseNum);
-          reference = `${book.tamilName} ${chapterNum}:${verseNum}`;
-          shareText = `${reference}\n\n${verseData.text}`;
+          if (verseData) {
+            reference = `${book.tamilName} ${chapterNum}:${verseNum}`;
+            shareText = `${reference}\n\n${verseData.text}`;
+          } else {
+            throw new Error(`வசனம் ${verseNum} காணவில்லை`);
+          }
         }
         
         // Add app signature
