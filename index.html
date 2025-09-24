@@ -6,55 +6,19 @@
   <title>தமிழ் பைபிள்</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: linear-gradient(135deg, #f0f4f8 0%, #e6f0fa 100%);
       color: #2c3e50;
-      font-family: 'Noto Sans Tamil', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.7;
+      font-family: 'Noto Sans Tamil', 'Segoe UI', sans-serif;
       padding: 15px;
-      min-height: 100vh;
+      line-height: 1.7;
     }
-    
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    
-    header {
-      text-align: center;
-      padding: 20px 15px;
-      margin-bottom: 25px;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-    
-    h1 {
-      font-size: 2.4rem;
-      color: #1a3a6c;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    
-    .subtitle {
-      color: #4a6fa5;
-      font-size: 1.15rem;
-    }
-    
-    .controls {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 25px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    
+    .container { max-width: 900px; margin: 0 auto; }
+    header { text-align: center; padding: 20px 0; margin-bottom: 25px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    h1 { font-size: 2.3rem; color: #1a3a6c; }
+    .subtitle { color: #4a6fa5; margin-top: 8px; }
+    .controls { display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; justify-content: center; }
     select, button {
       padding: 12px 18px;
       border: 2px solid #2c5aa0;
@@ -63,77 +27,21 @@
       font-size: 1rem;
       font-weight: 600;
       color: #2c5aa0;
-      cursor: pointer;
       min-width: 140px;
       text-align: center;
     }
-    
-    select:focus, button:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.25);
-    }
-    
-    button:hover {
-      background: #2c5aa0;
-      color: white;
-    }
-    
-    .bible-area {
-      background: white;
-      border-radius: 16px;
-      padding: 25px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.07);
-      margin-bottom: 25px;
-    }
-    
-    .ref {
-      text-align: center;
-      font-size: 1.5rem;
-      color: #1a3a6c;
-      margin-bottom: 22px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid #eaeff5;
-      font-weight: 600;
-    }
-    
-    .verses {
-      font-size: 1.25rem;
-      text-align: justify;
-    }
-    
-    .v {
-      margin-bottom: 16px;
-      position: relative;
-      padding-left: 32px;
-    }
-    
-    .vn {
-      position: absolute;
-      left: 0;
-      top: 0;
-      color: #4a6fa5;
-      font-weight: 700;
-      font-size: 0.95em;
-    }
-    
-    .footer {
-      text-align: center;
-      padding: 18px;
-      color: #5a72a0;
-      font-size: 0.95rem;
-    }
-    
-    .loading {
-      text-align: center;
-      padding: 20px;
-      color: #4a6fa5;
-    }
-    
+    button:hover { background: #2c5aa0; color: white; }
+    .bible-area { background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.07); margin-bottom: 25px; }
+    .ref { text-align: center; font-size: 1.5rem; color: #1a3a6c; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1px solid #eaeff5; }
+    .verses { font-size: 1.25rem; text-align: justify; }
+    .v { margin-bottom: 16px; position: relative; padding-left: 32px; }
+    .vn { position: absolute; left: 0; top: 0; color: #4a6fa5; font-weight: 700; font-size: 0.95em; }
+    .footer { text-align: center; padding: 18px; color: #5a72a0; font-size: 0.95rem; }
+    .loading { text-align: center; padding: 20px; color: #4a6fa5; }
     @media (max-width: 600px) {
-      .controls { flex-direction: column; align-items: center; }
+      .controls { flex-direction: column; }
       select, button { width: 100%; max-width: 300px; }
       h1 { font-size: 2rem; }
-      .verses { font-size: 1.15rem; }
     }
   </style>
 </head>
@@ -167,42 +75,56 @@
   </div>
 
   <script>
-    let bookList = []; // Will store array of {id, name}
+    let bookList = [];        // from Books.json
+    let filenameMap = {};     // from bookFilenames.json
     
-    // Load Books.json (which is an array)
     async function init() {
       try {
-        const res = await fetch('Books.json');
-        bookList = await res.json();
-        renderBooks();
-      } catch (e) {
+        // Load both JSON files
+        const [booksRes, filenamesRes] = await Promise.all([
+          fetch('Books.json'),
+          fetch('bookFilenames.json')
+        ]);
+        
+        bookList = await booksRes.json();
+        filenameMap = await filenamesRes.json();
+        
+        populateBooks();
+      } catch (err) {
         document.getElementById('verses').innerHTML = 
-          `<p style="color:#c00;">பிழை: Books.json கோப்பை ஏற்ற முடியவில்லை. அனைத்து கோப்புகளும் ஒரே அடைவில் உள்ளதை உறுதிப்படுத்தவும்.</p>`;
+          `<p style="color:red;">பிழை: ${err.message}<br>தேவையான கோப்புகள் (Books.json, bookFilenames.json) இந்த HTML உடன் ஒரே அடைவில் உள்ளதை உறுதிப்படுத்தவும்.</p>`;
+        console.error(err);
       }
     }
     
-    function renderBooks() {
+    function populateBooks() {
       const sel = document.getElementById('book');
       sel.innerHTML = '<option value="">புத்தகம்</option>';
       
-      // Sort by id (as number)
-      const sortedBooks = [...bookList].sort((a, b) => parseInt(a.id) - parseInt(b.id));
+      // Sort by numeric ID
+      const sorted = [...bookList].sort((a, b) => parseInt(a.id) - parseInt(b.id));
       
-      sortedBooks.forEach(book => {
+      sorted.forEach(book => {
         const opt = document.createElement('option');
-        opt.value = book.id; // e.g., "1"
-        opt.textContent = book.name; // e.g., "ஆதியாகமம்"
+        opt.value = book.id;
+        opt.textContent = book.name;
         sel.appendChild(opt);
       });
     }
     
+    // Get actual filename from book ID
+    function getFilename(bookId) {
+      return filenameMap[bookId] || `${bookId}.json`;
+    }
+    
     async function loadBook(bookId) {
+      const filename = getFilename(bookId);
       try {
-        const res = await fetch(`${bookId}.json`);
-        if (!res.ok) throw new Error('புத்தகம் கிடைக்கவில்லை');
+        const res = await fetch(filename);
+        if (!res.ok) throw new Error(`கோப்பு ${filename} கிடைக்கவில்லை`);
         return await res.json();
-      } catch (e) {
-        throw new Error(`புத்தகம் ${bookId} ஏற்ற முடியவில்லை`);
+      } catch (err) {
+        throw new Error(`புத்தகம் ${bookId} (${filename}) ஏற்ற முடியவில்லை: ${err.message}`);
       }
     }
     
@@ -217,7 +139,6 @@
           throw new Error('அத்தியாயம் காலியாக உள்ளது');
         }
         
-        // Find book name from bookList
         const book = bookList.find(b => b.id === bookId);
         const bookName = book ? book.name : `புத்தகம் ${bookId}`;
         
@@ -229,9 +150,9 @@
         });
         document.getElementById('verses').innerHTML = html;
         
-      } catch (e) {
+      } catch (err) {
         document.getElementById('verses').innerHTML = 
-          `<p style="color:#c00;">பிழை: ${e.message}</p>`;
+          `<p style="color:#c00;">பிழை: ${err.message}</p>`;
       }
     }
     
@@ -255,8 +176,8 @@
           opt.textContent = ch;
           chapSel.appendChild(opt);
         });
-      } catch (e) {
-        // Silently fail — user will see error when loading
+      } catch (err) {
+        console.warn("Chapter load failed:", err);
       }
     });
     
@@ -266,14 +187,12 @@
       if (b && c) loadChapter(b, c);
     });
     
-    // Auto-load when chapter selected
     document.getElementById('chapter').addEventListener('change', () => {
       const b = document.getElementById('book').value;
       const c = document.getElementById('chapter').value;
       if (b && c) loadChapter(b, c);
     });
     
-    // Start
     document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
