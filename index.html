@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>தமிழ் பைபிள்</title>
+  <title>பரிசுத்த வேதாகமம்</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * { 
@@ -43,7 +43,7 @@
       left: 0;
       right: 0;
       text-align: center;
-      padding: 18px 15px;
+      padding: 8px 15px;
       background: linear-gradient(135deg, #1a3a6c 0%, #2c5aa0 100%);
       border-radius: 0 0 16px 16px;
       box-shadow: 0 6px 20px rgba(26, 58, 108, 0.25);
@@ -225,6 +225,24 @@
       background: #e3f2fd;
     }
     
+    /* Custom styling for search icon */
+    .tab[data-tab="tab1"] {
+      color: #ff6b35 !important;
+    }
+    
+    .tab[data-tab="tab1"].active {
+      color: white !important;
+    }
+    
+    /* Custom styling for note icon */
+    .tab[data-tab="tab3"] {
+      color: #28a745 !important;
+    }
+    
+    .tab[data-tab="tab3"].active {
+      color: white !important;
+    }
+    
     /* Prevent zoom on input focus */
     select {
       font-size: 16px !important;
@@ -261,8 +279,7 @@
 <body>
   <!-- STICKY TITLE BAR -->
   <div class="title-bar">
-    <h1>தமிழ் பைபிள்</h1>
-    <div class="subtitle">Tamil Bible • தமிழ் வேதாகமம்</div>
+    <h1>பரிசுத்த வேதாகமம்</h1>
   </div>
 
   <div class="container">
@@ -298,9 +315,9 @@
   <!-- STICKY TABS at the bottom -->
   <div class="tabs-container">
     <div class="tabs">
-      <div class="tab active" data-tab="tab1">தேடு</div>
-      <div class="tab" data-tab="tab2">புக்மார்க்</div>
-      <div class="tab" data-tab="tab3">குறிப்புகள்</div>
+      <div class="tab active" data-tab="tab1">🔍</div>
+      <div class="tab" data-tab="tab2">❤️</div>
+      <div class="tab" data-tab="tab3">📝</div>
     </div>
   </div>
 
@@ -573,12 +590,12 @@
           if (bookmarks.length === 0) {
             verseText.innerHTML = `
               <div style="text-align: center; padding: 30px; color: #7f8c8d;">
-                <h3 style="margin-bottom: 10px; font-size: 1.2rem;">எந்த புக்மார்க்குகளும் இல்லை</h3>
-                <p style="font-size: 1rem;">உங்கள் பிடித்த வசனங்களை புக்மார்க் செய்ய முக்கியமான வசனத்தைத் தேர்ந்தெடுத்து புக்மார்க் ஐகானை அழுத்தவும்</p>
+                <h3 style="margin-bottom: 10px; font-size: 1.2rem;">எந்த விருப்புபட்டியலும் இல்லை</h3>
+                <p style="font-size: 1rem;">உங்கள் பிடித்த வசனங்களை விருப்புபட்டியலில் சேர்க்க முக்கியமான வசனத்தைத் தேர்ந்தெடுத்து விருப்புபட்டியல் ஐகானை அழுத்தவும்</p>
               </div>
             `;
           } else {
-            let bookmarkHTML = '<div style="padding: 10px;"><h3 style="margin-bottom: 15px; color: #1a3a6c; text-align: center; font-size: 1.3rem;">என் புக்மார்க்குகள்</h3>';
+            let bookmarkHTML = '<div style="padding: 10px;"><h3 style="margin-bottom: 15px; color: #1a3a6c; text-align: center; font-size: 1.3rem;">என் விருப்புபட்டியல்</h3>';
             bookmarks.forEach((bookmark, index) => {
               bookmarkHTML += `
                 <div style="padding: 14px; margin: 10px 0; background: #f8f9fa; border-radius: 12px; cursor: pointer; border-left: 4px solid #2c5aa0; box-shadow: 0 3px 10px rgba(0,0,0,0.08);"
@@ -621,13 +638,15 @@
       
       try {
         const searchResults = document.getElementById('searchResults');
-        searchResults.innerHTML = '<div style="color: #666; font-size: 1rem; margin-top: 10px; text-align: center;">தேடல் செயல்படுத்தப்படுகிறது...</div>';
+        searchResults.innerHTML = '<div style="color: #666; font-size: 1rem; margin-top: 10px; text-align: center;">தேடல் செயல்படுத்தப்படுகிறது...<br><small>அனைத்து புத்தகங்களிலும் தேடப்படுகிறது</small></div>';
         
         // Store search query
         lastSearchQuery = query;
         
         // Search through all books
         let foundResults = [];
+        let booksSearched = 0;
+        const totalBooks = booksMetadata.length;
         
         for (const book of booksMetadata) {
           try {
@@ -645,16 +664,19 @@
                     text: verse.text,
                     reference: `${book.tamilName} ${chapter.chapter}:${verse.verse}`
                   });
-                  
-                  // Limit results to prevent performance issues
-                  if (foundResults.length >= 50) break;
                 }
               }
-              if (foundResults.length >= 50) break;
             }
-            if (foundResults.length >= 50) break;
+            
+            booksSearched++;
+            // Update progress every few books
+            if (booksSearched % 5 === 0 || booksSearched === totalBooks) {
+              const progress = Math.round((booksSearched / totalBooks) * 100);
+              searchResults.innerHTML = `<div style="color: #666; font-size: 1rem; margin-top: 10px; text-align: center;">தேடல் செயல்படுத்தப்படுகிறது...<br><small>${booksSearched}/${totalBooks} புத்தகங்கள் தேடப்பட்டன (${progress}%)</small></div>`;
+            }
           } catch (error) {
             console.warn(`Could not search in book ${book.tamilName}:`, error);
+            booksSearched++;
             continue;
           }
         }
@@ -665,7 +687,11 @@
         // Display search results
         const searchResultsDiv = document.getElementById('searchResults');
         if (foundResults.length > 0) {
-          let resultsHTML = `<div style="margin-top: 15px;"><h4 style="color: #1a3a6c; margin-bottom: 10px;">காணப்பட்ட ${foundResults.length} முடிவுகள்:</h4>`;
+          let resultsHTML = `<div style="margin-top: 15px;">
+            <h4 style="color: #1a3a6c; margin-bottom: 10px;">காணப்பட்ட ${foundResults.length} முடிவுகள்:</h4>
+            <div style="background: #e8f4fd; padding: 8px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9rem; color: #2c5aa0;">
+              ✓ அனைத்து ${totalBooks} புத்தகங்களிலும் தேடப்பட்டது
+            </div>`;
           
           foundResults.forEach((result, index) => {
             // Highlight search term in text
@@ -804,9 +830,9 @@
       if (!exists) {
         bookmarks.push(newBookmark);
         localStorage.setItem('bibleBookmarks', JSON.stringify(bookmarks));
-        alert('புக்மார்க் சேர்க்கப்பட்டது!');
+        alert('விருப்புபட்டியலில் சேர்க்கப்பட்டது!');
       } else {
-        alert('இந்த வசனம் ஏற்கனவே புக்மார்க் செய்யப்பட்டுள்ளது!');
+        alert('இந்த வசனம் ஏற்கனவே விருப்புபட்டியலில் உள்ளது!');
       }
     }
     
