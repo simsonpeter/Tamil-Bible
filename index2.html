@@ -17,23 +17,31 @@
       background: linear-gradient(135deg, #f0f7ff 0%, #e6f0fa 100%);
       color: #2c3e50;
       font-family: 'Noto Sans Tamil', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding: 12px;
+      padding: 0;
       line-height: 1.6;
       min-height: 100vh;
+      padding-top: 140px; /* Space for sticky header */
+      padding-bottom: 60px; /* Space for sticky tabs */
     }
     
     .container { 
       max-width: 100%; 
       margin: 0 auto; 
+      padding: 12px;
     }
     
-    /* Row 1: Title Bar */
+    /* Row 1: Title Bar - Sticky */
     .title-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
       text-align: center;
       padding: 18px 12px;
       margin-bottom: 16px;
       background: white;
-      border-radius: 16px;
+      border-radius: 0 0 16px 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     
@@ -90,7 +98,7 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-      background-image: url("image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%232c5aa0' viewBox='0 0 4 5'%3e%3cpath d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e");
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%232c5aa0' viewBox='0 0 4 5'%3e%3cpath d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e");
       background-repeat: no-repeat;
       background-position: right 10px center;
       background-size: 10px;
@@ -127,12 +135,17 @@
       font-size: 1.0rem;
     }
     
-    /* Row 4: Tabs */
+    /* Row 4: Tabs - Sticky */
     .tabs-row {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
       background: white;
-      border-radius: 14px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      border-radius: 16px 16px 0 0;
+      box-shadow: 0 -3px 12px rgba(0,0,0,0.08);
       overflow: hidden;
+      z-index: 100;
     }
     
     .tabs {
@@ -161,6 +174,158 @@
     .tab.active {
       background: #2c5aa0;
       color: white;
+    }
+    
+    /* Tab Content */
+    .tab-content {
+      display: none;
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      margin-bottom: 16px;
+      min-height: 200px;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Search Tab */
+    .search-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .search-input {
+      flex: 1;
+      padding: 12px 15px;
+      border: 2px solid #2c5aa0;
+      border-radius: 12px;
+      font-size: 1rem;
+    }
+    
+    .search-btn {
+      padding: 12px 20px;
+      background: #2c5aa0;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .search-results {
+      margin-top: 15px;
+    }
+    
+    .search-result {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+    
+    .search-result:hover {
+      background-color: #f0f7ff;
+    }
+    
+    .search-result .verse-ref {
+      font-weight: 600;
+      color: #2c5aa0;
+    }
+    
+    /* Bookmark Tab */
+    .bookmark-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .bookmark-ref {
+      font-weight: 600;
+      color: #2c5aa0;
+    }
+    
+    .remove-bookmark {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    
+    /* Notes Tab */
+    .notes-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .note-input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #2c5aa0;
+      border-radius: 12px;
+      min-height: 100px;
+      font-family: 'Noto Sans Tamil', sans-serif;
+      font-size: 1rem;
+    }
+    
+    .save-note {
+      align-self: flex-end;
+      padding: 10px 20px;
+      background: #2c5aa0;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .notes-list {
+      margin-top: 15px;
+    }
+    
+    .note-item {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      background: #f9f9f9;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .note-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    
+    .note-ref {
+      font-weight: 600;
+      color: #2c5aa0;
+    }
+    
+    .note-date {
+      color: #777;
+      font-size: 0.85rem;
+    }
+    
+    .note-text {
+      margin-top: 5px;
+    }
+    
+    .delete-note {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 3px 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
     }
     
     /* Prevent zoom on input focus */
@@ -194,11 +359,27 @@
         padding: 12px 8px;
       }
     }
+    
+    /* Loading indicator */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(44, 90, 160, 0.3);
+      border-radius: 50%;
+      border-top-color: #2c5aa0;
+      animation: spin 1s ease-in-out infinite;
+      margin-left: 10px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Row 1: Title Bar -->
+    <!-- Row 1: Title Bar - Now Sticky -->
     <div class="title-bar">
       <h1>தமிழ் பைபிள்</h1>
       <div class="subtitle">Tamil Bible • தமிழ் வேதாகமம்</div>
@@ -235,44 +416,104 @@
       </div>
     </div>
     
-    <!-- Row 4: Tabs -->
-    <div class="tabs-row">
-      <div class="tabs">
-        <div class="tab active" data-tab="tab1">தேடு</div>
-        <div class="tab" data-tab="tab2">புக்மார்க்</div>
-        <div class="tab" data-tab="tab3">குறிப்புகள்</div>
+    <!-- Tab Content Areas -->
+    <div id="search" class="tab-content active">
+      <div class="search-container">
+        <input type="text" class="search-input" id="searchInput" placeholder="வேதாகமத்தில் தேடுக...">
+        <button class="search-btn" id="searchBtn">தேடு</button>
       </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+    
+    <div id="bookmarks" class="tab-content">
+      <h3>உங்கள் புக்மார்க்குகள்</h3>
+      <div class="bookmarks-list" id="bookmarksList">
+        <p>இன்னும் புக்மார்க் செய்யப்படவில்லை</p>
+      </div>
+    </div>
+    
+    <div id="notes" class="tab-content">
+      <h3>குறிப்புகள் சேர்க்கவும்</h3>
+      <textarea class="note-input" id="noteInput" placeholder="இங்கே உங்கள் குறிப்புகளை எழுதவும்..."></textarea>
+      <button class="save-note" id="saveNoteBtn">குறிப்பைச் சேமிக்கவும்</button>
+      <div class="notes-list" id="notesList"></div>
+    </div>
+  </div>
+
+  <!-- Tabs Row - Now Sticky -->
+  <div class="tabs-row">
+    <div class="tabs">
+      <div class="tab active" data-tab="search">தேடு</div>
+      <div class="tab" data-tab="bookmarks">புக்மார்க்</div>
+      <div class="tab" data-tab="notes">குறிப்புகள்</div>
     </div>
   </div>
 
   <script>
-    // Global data
-    let booksMetadata = []; // From Books.json
-    
-    // Initialize the app
-    async function initializeApp() {
-      try {
-        // Load Books.json
-        const booksResponse = await fetch('Books.json');
-        if (!booksResponse.ok) {
-          throw new Error('Books.json கோப்பை ஏற்ற முடியவில்லை');
-        }
-        const booksData = await booksResponse.json();
-        
-        // Process into simple array with IDs
-        booksMetadata = booksData.map((item, index) => ({
-          id: (index + 1).toString(),
-          englishName: item.book.english,
-          tamilName: item.book.tamil.trim()
-        }));
-        
-        // Populate book dropdown
-        populateBookDropdown();
-        
-      } catch (error) {
-        document.getElementById('verseText').textContent = `பிழை: ${error.message}`;
-        console.error('Initialization error:', error);
+    // Sample Bible data for demonstration
+    const bibleData = {
+      "John": {
+        "chapters": [
+          {
+            "chapter": 3,
+            "verses": [
+              {"verse": 1, "text": "நிக்கொதேமோஸ் என்னும் ஒரு பரிசேயன் இருந்தான்; அவன் யூதருடைய மூப்பர்களில் ஒருவன்."},
+              {"verse": 2, "text": "இரவிலே இயேசுவிடம் வந்து: ரப்பி, தெளிவாய் உண்மையாகவே நீர் தேவதூதனாய் வந்திருக்கிறீர் என்று நாங்கள் அறிந்தோம்; ஏனெனில் தேவனுடைய கையிருக்கும் இல்லாமற் பண்ணும் அடையாளங்களை நீர் பண்ணுகிறீர் என்றான்."},
+              {"verse": 3, "text": "இயேசு அவனுக்கு: உண்மையாகவே உண்மையாக உனக்குச் சொல்லுகிறேன்; யார் முதலாகப் பிறக்கிறதில்லையோ, அவன் தேவனுடைய ராஜ்யத்தைக் காணமாட்டான் என்றார்."},
+              {"verse": 4, "text": "நிக்கொதேமோஸ் அவருக்கு: ஒருவன் முதிர்ந்தவனாயிருக்கும்போது அவன் எப்படி பிறப்பான்? அவன் இரண்டாம்படி தன் தாயின் வயிற்றில் போய், பிறக்க முடியுமா என்றான்."},
+              {"verse": 5, "text": "இயேசு அவனுக்கு: உண்மையாகவே உண்மையாக உனக்குச் சொல்லுகிறேன்; நீராலும் ஆவியாலும் பிறக்கிறவனல்லாமல், தேவனுடைய ராஜ்யத்தில் பிரவேசிக்க முடியாது என்றார்."},
+              {"verse": 16, "text": "ஏனெனில் தேவன் உலகத்தை இவ்வளவு அன்புகூர்ந்தார், அவருடைய ஒரே பேறான குமாரனையும் கொடுக்க மனம்போனார்; அவனை நம்புகிறவன் அழியாமல் என்றென்றைக்கும் ஜீவனை அடையும்படிக்கு."}
+            ]
+          },
+          {
+            "chapter": 14,
+            "verses": [
+              {"verse": 1, "text": "உங்கள் இருதயம் கலங்காதிருக்கட்டும்; தேவனையும் நம்புங்கள், என்னையும் நம்புங்கள்."},
+              {"verse": 2, "text": "என் பிதாவுடைய வீட்டில் பல இருப்பிடங்கள் இருக்கிறது; இல்லாவிட்டால், நான் உங்களுக்காக இருப்பிடம் செய்திருக்கேன் என்று சொல்லுவேனா?"},
+              {"verse": 3, "text": "நான் போய் உங்களுக்காக இருப்பிடம் செய்துவிட்டால், உங்களையும் என்னுடன் இருக்கும்படி வருவேன்; நான் இருக்குமிடத்தில் நீங்களும் இருப்பீர்கள்."},
+              {"verse": 6, "text": "தொம்மா அவருக்கு: கர்த்தரே, நீர் எங்கே போகிறீர் என்று நாங்கள் அறியோம்; நீர் எப்படி நாங்கள் அந்த வழியைத் தெரிந்துகொள்வோம் என்றான்."},
+              {"verse": 7, "text": "நான் இருக்கிற இடத்தில் நீங்களும் இருப்பீர்கள் என்று சொன்னேன்; நான் எங்கே இருக்கிறேன் என்று நீங்கள் அறிந்து, அந்த வழியையும் அறிந்திருக்கிறீர்கள் என்றார்."}
+            ]
+          }
+        ]
+      },
+      "Matthew": {
+        "chapters": [
+          {
+            "chapter": 5,
+            "verses": [
+              {"verse": 1, "text": "இயேசு அந்த ஜனங்களைப் பார்த்து, மலைக்கு ஏறிப்போய், அமர்ந்தார்; அப்பொழுது அவருடைய சீஷர்கள் அவரிடம் வந்தார்கள்."},
+              {"verse": 2, "text": "அப்படியே அவர் அவர்களுக்கு உபதேசித்து: ஆத்துமா நல்லவர்கள், அவர்கள் தேவனுடைய ராஜ்யம் பொருந்தும்."},
+              {"verse": 3, "text": "ஆத்துமா துக்கிக்கிறவர்கள், அவர்கள் ஆறுதல் பொருந்தும்."},
+              {"verse": 4, "text": "ஆத்துமா மென்மையானவர்கள், அவர்கள் பூமியை உரிமையாகப் பெறுவார்கள்."},
+              {"verse": 5, "text": "ஆத்துமா தாகமாயிருக்கிறவர்கள், அவர்கள் திருப்தியாவார்கள்."}
+            ]
+          }
+        ]
+      },
+      "Genesis": {
+        "chapters": [
+          {
+            "chapter": 1,
+            "verses": [
+              {"verse": 1, "text": "ஆதியிலே தேவன் வானத்தையும் பூமியையும் படைத்தார்."},
+              {"verse": 2, "text": "பூமி வெறுமையாயும் ஊழியாயும் இருந்தது; ஆழ்ந்த குளத்தின்மேல் இருள் இருந்தது; தேவனுடைய ஆவி நீர்மேல் பரப்பினது."},
+              {"verse": 3, "text": "தேவன்: ஒளி உண்டாக என்றார்; அப்படியே ஒளி உண்டாயிற்று."},
+              {"verse": 4, "text": "தேவன் ஒளியைப் பார்த்து, அது நல்லது என்று தீர்ப்பளித்தார்; பிறகு தேவன் ஒளியையும் இருளையும் பிரித்தார்."},
+              {"verse": 5, "text": "தேவன் ஒளிக்கு நாள் என்றும், இருளுக்கு இரவு என்றும் பெயரிட்டார்; மாலையும் காலையுமாய் ஒரு நாள் ஆயிற்று."}
+            ]
+          }
+        ]
       }
+    };
+
+    // Initialize the app
+    function initializeApp() {
+      // Populate book dropdown
+      populateBookDropdown();
+      
+      // Setup event listeners
+      setupEventListeners();
     }
     
     // Populate book dropdown
@@ -280,102 +521,78 @@
       const bookSelect = document.getElementById('bookSelect');
       bookSelect.innerHTML = '<option value="">தேர்ந்தெடு</option>';
       
-      booksMetadata.forEach(book => {
+      // Add books to dropdown
+      Object.keys(bibleData).forEach(bookName => {
         const option = document.createElement('option');
-        option.value = book.id;
-        option.textContent = book.tamilName;
+        option.value = bookName;
+        option.textContent = getTamilBookName(bookName);
         bookSelect.appendChild(option);
       });
     }
     
-    // Load a specific book's data
-    async function loadBookData(bookId) {
-      const book = booksMetadata.find(b => b.id === bookId);
-      if (!book) {
-        throw new Error('தேர்ந்தெடுக்கப்பட்ட புத்தகம் காணவில்லை');
-      }
-      
-      const filename = `${book.englishName}.json`;
-      try {
-        const response = await fetch(filename);
-        if (!response.ok) {
-          throw new Error(`${filename} கோப்பு கிடைக்கவில்லை`);
-        }
-        return await response.json();
-      } catch (error) {
-        throw new Error(`புத்தகத்தை ஏற்ற முடியவில்லை: ${error.message}`);
-      }
+    // Get Tamil name for book
+    function getTamilBookName(englishName) {
+      const bookNames = {
+        "John": "யோவான்",
+        "Matthew": "மத்தேயு",
+        "Genesis": "உலகக் குறிப்பு"
+      };
+      return bookNames[englishName] || englishName;
     }
     
     // Populate chapter dropdown
-    async function populateChapterDropdown(bookId) {
+    function populateChapterDropdown(bookName) {
       const chapterSelect = document.getElementById('chapterSelect');
       chapterSelect.innerHTML = '<option value="">தேர்ந்தெடு</option>';
       document.getElementById('verseSelect').innerHTML = '<option value="">தேர்ந்தெடு</option>';
       
-      if (!bookId) return;
+      if (!bookName) return;
       
-      try {
-        const bookData = await loadBookData(bookId);
-        
-        if (!Array.isArray(bookData.chapters)) {
-          throw new Error('அத்தியாய தரவு கிடைக்கவில்லை');
-        }
-        
-        // Extract chapter numbers and sort them
-        const chapters = bookData.chapters
-          .map(ch => ch.chapter)
-          .map(Number)
-          .sort((a, b) => a - b);
-        
-        chapters.forEach(chNum => {
-          const option = document.createElement('option');
-          option.value = chNum;
-          option.textContent = chNum;
-          chapterSelect.appendChild(option);
-        });
-        
-      } catch (error) {
-        console.warn('Chapter dropdown population failed:', error);
-      }
+      const bookData = bibleData[bookName];
+      if (!bookData || !bookData.chapters) return;
+      
+      // Extract chapter numbers and sort them
+      const chapters = bookData.chapters
+        .map(ch => ch.chapter)
+        .sort((a, b) => a - b);
+      
+      chapters.forEach(chNum => {
+        const option = document.createElement('option');
+        option.value = chNum;
+        option.textContent = chNum;
+        chapterSelect.appendChild(option);
+      });
     }
     
     // Populate verse dropdown
-    async function populateVerseDropdown(bookId, chapterNum) {
+    function populateVerseDropdown(bookName, chapterNum) {
       const verseSelect = document.getElementById('verseSelect');
       verseSelect.innerHTML = '<option value="">தேர்ந்தெடு</option>';
       
-      if (!bookId || !chapterNum) return;
+      if (!bookName || !chapterNum) return;
       
-      try {
-        const bookData = await loadBookData(bookId);
-        const chapterData = bookData.chapters.find(ch => ch.chapter == chapterNum);
-        
-        if (!chapterData || !Array.isArray(chapterData.verses)) {
-          throw new Error('வசன தரவு கிடைக்கவில்லை');
-        }
-        
-        // Extract verse numbers
-        const verses = chapterData.verses
-          .map(v => v.verse)
-          .map(Number)
-          .sort((a, b) => a - b);
-        
-        verses.forEach(vNum => {
-          const option = document.createElement('option');
-          option.value = vNum;
-          option.textContent = vNum;
-          verseSelect.appendChild(option);
-        });
-        
-      } catch (error) {
-        console.warn('Verse dropdown population failed:', error);
-      }
+      const bookData = bibleData[bookName];
+      if (!bookData || !bookData.chapters) return;
+      
+      const chapterData = bookData.chapters.find(ch => ch.chapter == chapterNum);
+      if (!chapterData || !chapterData.verses) return;
+      
+      // Extract verse numbers
+      const verses = chapterData.verses
+        .map(v => v.verse)
+        .sort((a, b) => a - b);
+      
+      verses.forEach(vNum => {
+        const option = document.createElement('option');
+        option.value = vNum;
+        option.textContent = vNum;
+        verseSelect.appendChild(option);
+      });
     }
     
     // Load and display a specific verse
-    async function loadVerse(bookId, chapterNum, verseNum) {
-      if (!bookId || !chapterNum || !verseNum) {
+    function loadVerse(bookName, chapterNum, verseNum) {
+      if (!bookName || !chapterNum || !verseNum) {
         document.getElementById('verseText').textContent = 'புத்தகம், அத்தியாயம் மற்றும் வசனம் தேர்ந்தெடுக்கப்படவில்லை';
         document.getElementById('verseText').classList.add('placeholder');
         return;
@@ -385,10 +602,13 @@
       document.getElementById('verseText').classList.remove('placeholder');
       
       try {
-        const bookData = await loadBookData(bookId);
-        const chapterData = bookData.chapters.find(ch => ch.chapter == chapterNum);
+        const bookData = bibleData[bookName];
+        if (!bookData || !bookData.chapters) {
+          throw new Error(`புத்தகம் ${bookName} காணவில்லை`);
+        }
         
-        if (!chapterData || !Array.isArray(chapterData.verses)) {
+        const chapterData = bookData.chapters.find(ch => ch.chapter == chapterNum);
+        if (!chapterData || !chapterData.verses) {
           throw new Error(`அத்தியாயம் ${chapterNum} காணவில்லை`);
         }
         
@@ -418,34 +638,347 @@
           
           // Add active class to clicked tab
           tab.classList.add('active');
+          
+          // Hide all tab content
+          document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+          });
+          
+          // Show the selected tab content
+          const tabId = tab.getAttribute('data-tab');
+          document.getElementById(tabId).classList.add('active');
         });
       });
     }
     
-    // Event Listeners
-    document.getElementById('bookSelect').addEventListener('change', async (e) => {
-      const bookId = e.target.value;
-      await populateChapterDropdown(bookId);
-    });
+    // Search functionality
+    function setupSearch() {
+      const searchBtn = document.getElementById('searchBtn');
+      const searchInput = document.getElementById('searchInput');
+      const searchResults = document.getElementById('searchResults');
+      
+      searchBtn.addEventListener('click', performSearch);
+      searchInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+          performSearch();
+        }
+      });
+    }
     
-    document.getElementById('chapterSelect').addEventListener('change', async (e) => {
-      const bookId = document.getElementById('bookSelect').value;
-      const chapterNum = e.target.value;
-      await populateVerseDropdown(bookId, chapterNum);
-    });
+    // Perform search
+    function performSearch() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const searchResults = document.getElementById('searchResults');
+      searchResults.innerHTML = '';
+      
+      if (!searchTerm) return;
+      
+      let foundResults = 0;
+      const maxResults = 10;
+      
+      // Search through all books
+      for (const bookName in bibleData) {
+        if (foundResults >= maxResults) break;
+        
+        const bookData = bibleData[bookName];
+        
+        for (const chapter of bookData.chapters) {
+          if (foundResults >= maxResults) break;
+          
+          for (const verse of chapter.verses) {
+            if (foundResults >= maxResults) break;
+            
+            if (verse.text.toLowerCase().includes(searchTerm)) {
+              const resultDiv = document.createElement('div');
+              resultDiv.className = 'search-result';
+              resultDiv.innerHTML = `
+                <div class="verse-ref">${getTamilBookName(bookName)} ${chapter.chapter}:${verse.verse}</div>
+                <div class="verse-text">${verse.text}</div>
+              `;
+              
+              resultDiv.addEventListener('click', () => {
+                document.getElementById('bookSelect').value = bookName;
+                populateChapterDropdown(bookName);
+                setTimeout(() => {
+                  document.getElementById('chapterSelect').value = chapter.chapter;
+                  populateVerseDropdown(bookName, chapter.chapter);
+                  setTimeout(() => {
+                    document.getElementById('verseSelect').value = verse.verse;
+                    loadVerse(bookName, chapter.chapter, verse.verse);
+                    
+                    // Switch to main content view
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                      content.classList.remove('active');
+                    });
+                    document.querySelector('.tab[data-tab="search"]').classList.remove('active');
+                  }, 100);
+                }, 100);
+              });
+              
+              searchResults.appendChild(resultDiv);
+              foundResults++;
+            }
+          }
+        }
+      }
+      
+      if (foundResults === 0) {
+        searchResults.innerHTML = '<p>எதுவும் காணப்படவில்லை. வேறு சொல்லை முயற்சிக்கவும்.</p>';
+      }
+    }
     
-    document.getElementById('verseSelect').addEventListener('change', () => {
-      const bookId = document.getElementById('bookSelect').value;
-      const chapterNum = document.getElementById('chapterSelect').value;
-      const verseNum = document.getElementById('verseSelect').value;
-      loadVerse(bookId, chapterNum, verseNum);
-    });
+    // Bookmark functionality
+    function setupBookmarks() {
+      const bookmarksList = document.getElementById('bookmarksList');
+      
+      // Load bookmarks from localStorage
+      const bookmarks = JSON.parse(localStorage.getItem('bibleBookmarks') || '[]');
+      
+      if (bookmarks.length === 0) {
+        bookmarksList.innerHTML = '<p>இன்னும் புக்மார்க் செய்யப்படவில்லை</p>';
+        return;
+      }
+      
+      bookmarksList.innerHTML = '';
+      bookmarks.forEach((bookmark, index) => {
+        const bookmarkDiv = document.createElement('div');
+        bookmarkDiv.className = 'bookmark-item';
+        bookmarkDiv.innerHTML = `
+          <div class="bookmark-ref">${bookmark.reference}</div>
+          <button class="remove-bookmark" data-index="${index}">நீக்கு</button>
+        `;
+        
+        bookmarkDiv.querySelector('.remove-bookmark').addEventListener('click', () => {
+          bookmarks.splice(index, 1);
+          localStorage.setItem('bibleBookmarks', JSON.stringify(bookmarks));
+          setupBookmarks(); // Refresh the list
+        });
+        
+        bookmarkDiv.addEventListener('click', (e) => {
+          if (!e.target.classList.contains('remove-bookmark')) {
+            const [book, chapterVerse] = bookmark.reference.split(' ');
+            const [chapter, verse] = chapterVerse.split(':');
+            
+            document.getElementById('bookSelect').value = bookmark.bookName;
+            populateChapterDropdown(bookmark.bookName);
+            
+            setTimeout(() => {
+              document.getElementById('chapterSelect').value = chapter;
+              populateVerseDropdown(bookmark.bookName, chapter);
+              
+              setTimeout(() => {
+                document.getElementById('verseSelect').value = verse;
+                loadVerse(bookmark.bookName, chapter, verse);
+                
+                // Switch to main content view
+                document.querySelectorAll('.tab-content').forEach(content => {
+                  content.classList.remove('active');
+                });
+                document.querySelector('.tab[data-tab="bookmarks"]').classList.remove('active');
+              }, 100);
+            }, 100);
+          }
+        });
+        
+        bookmarksList.appendChild(bookmarkDiv);
+      });
+    }
+    
+    // Add current verse to bookmarks
+    function addBookmark() {
+      const bookSelect = document.getElementById('bookSelect');
+      const chapterSelect = document.getElementById('chapterSelect');
+      const verseSelect = document.getElementById('verseSelect');
+      
+      if (!bookSelect.value || !chapterSelect.value || !verseSelect.value) {
+        alert('முதலில் புத்தகம், அத்தியாயம் மற்றும் வசனத்தைத் தேர்ந்தெடுக்கவும்');
+        return;
+      }
+      
+      const bookName = bookSelect.value;
+      const chapter = chapterSelect.value;
+      const verse = verseSelect.value;
+      const reference = `${getTamilBookName(bookName)} ${chapter}:${verse}`;
+      
+      const bookmark = {
+        bookName,
+        chapter,
+        verse,
+        reference
+      };
+      
+      const bookmarks = JSON.parse(localStorage.getItem('bibleBookmarks') || '[]');
+      const exists = bookmarks.some(b => 
+        b.bookName === bookName && 
+        b.chapter === chapter && 
+        b.verse === verse
+      );
+      
+      if (!exists) {
+        bookmarks.push(bookmark);
+        localStorage.setItem('bibleBookmarks', JSON.stringify(bookmarks));
+        alert('புக்மார்க் செய்யப்பட்டது!');
+      } else {
+        alert('இந்த வசனம் ஏற்கனவே புக்மார்க் செய்யப்பட்டுள்ளது');
+      }
+    }
+    
+    // Notes functionality
+    function setupNotes() {
+      const saveNoteBtn = document.getElementById('saveNoteBtn');
+      const noteInput = document.getElementById('noteInput');
+      const notesList = document.getElementById('notesList');
+      
+      // Load notes from localStorage
+      const notes = JSON.parse(localStorage.getItem('bibleNotes') || '[]');
+      
+      // Display notes
+      displayNotes(notes);
+      
+      saveNoteBtn.addEventListener('click', () => {
+        const noteText = noteInput.value.trim();
+        if (!noteText) {
+          alert('முதலில் குறிப்பை எழுதவும்');
+          return;
+        }
+        
+        const bookSelect = document.getElementById('bookSelect');
+        const chapterSelect = document.getElementById('chapterSelect');
+        const verseSelect = document.getElementById('verseSelect');
+        
+        if (!bookSelect.value || !chapterSelect.value || !verseSelect.value) {
+          alert('முதலில் புத்தகம், அத்தியாயம் மற்றும் வசனத்தைத் தேர்ந்தெடுக்கவும்');
+          return;
+        }
+        
+        const bookName = bookSelect.value;
+        const chapter = chapterSelect.value;
+        const verse = verseSelect.value;
+        const reference = `${getTamilBookName(bookName)} ${chapter}:${verse}`;
+        
+        const note = {
+          id: Date.now(),
+          bookName,
+          chapter,
+          verse,
+          reference,
+          text: noteText,
+          date: new Date().toLocaleDateString('ta-IN')
+        };
+        
+        notes.push(note);
+        localStorage.setItem('bibleNotes', JSON.stringify(notes));
+        
+        noteInput.value = '';
+        displayNotes(notes);
+        alert('குறிப்பு சேமிக்கப்பட்டது!');
+      });
+    }
+    
+    // Display notes
+    function displayNotes(notes) {
+      const notesList = document.getElementById('notesList');
+      notesList.innerHTML = '';
+      
+      if (notes.length === 0) {
+        notesList.innerHTML = '<p>இன்னும் குறிப்புகள் இல்லை</p>';
+        return;
+      }
+      
+      // Sort notes by date (newest first)
+      notes.sort((a, b) => b.id - a.id);
+      
+      notes.forEach(note => {
+        const noteDiv = document.createElement('div');
+        noteDiv.className = 'note-item';
+        noteDiv.innerHTML = `
+          <div class="note-header">
+            <div class="note-ref">${note.reference}</div>
+            <div class="note-date">${note.date}</div>
+          </div>
+          <div class="note-text">${note.text}</div>
+          <button class="delete-note" data-id="${note.id}">நீக்கு</button>
+        `;
+        
+        noteDiv.querySelector('.delete-note').addEventListener('click', () => {
+          const notes = JSON.parse(localStorage.getItem('bibleNotes') || '[]');
+          const updatedNotes = notes.filter(n => n.id !== note.id);
+          localStorage.setItem('bibleNotes', JSON.stringify(updatedNotes));
+          displayNotes(updatedNotes);
+        });
+        
+        noteDiv.addEventListener('click', (e) => {
+          if (!e.target.classList.contains('delete-note')) {
+            document.getElementById('bookSelect').value = note.bookName;
+            populateChapterDropdown(note.bookName);
+            
+            setTimeout(() => {
+              document.getElementById('chapterSelect').value = note.chapter;
+              populateVerseDropdown(note.bookName, note.chapter);
+              
+              setTimeout(() => {
+                document.getElementById('verseSelect').value = note.verse;
+                loadVerse(note.bookName, note.chapter, note.verse);
+                
+                // Switch to main content view
+                document.querySelectorAll('.tab-content').forEach(content => {
+                  content.classList.remove('active');
+                });
+                document.querySelector('.tab[data-tab="notes"]').classList.remove('active');
+              }, 100);
+            }, 100);
+          }
+        });
+        
+        notesList.appendChild(noteDiv);
+      });
+    }
+    
+    // Setup all event listeners
+    function setupEventListeners() {
+      document.getElementById('bookSelect').addEventListener('change', (e) => {
+        const bookName = e.target.value;
+        populateChapterDropdown(bookName);
+      });
+      
+      document.getElementById('chapterSelect').addEventListener('change', (e) => {
+        const bookName = document.getElementById('bookSelect').value;
+        const chapterNum = e.target.value;
+        populateVerseDropdown(bookName, chapterNum);
+      });
+      
+      document.getElementById('verseSelect').addEventListener('change', () => {
+        const bookName = document.getElementById('bookSelect').value;
+        const chapterNum = document.getElementById('chapterSelect').value;
+        const verseNum = document.getElementById('verseSelect').value;
+        loadVerse(bookName, chapterNum, verseNum);
+      });
+      
+      // Add bookmark button (we'll add this to the verse display)
+      const verseDisplay = document.querySelector('.verse-display-row');
+      const bookmarkBtn = document.createElement('button');
+      bookmarkBtn.textContent = 'புக்மார்க்';
+      bookmarkBtn.style.position = 'absolute';
+      bookmarkBtn.style.top = '10px';
+      bookmarkBtn.style.right = '10px';
+      bookmarkBtn.style.background = '#2c5aa0';
+      bookmarkBtn.style.color = 'white';
+      bookmarkBtn.style.border = 'none';
+      bookmarkBtn.style.borderRadius = '6px';
+      bookmarkBtn.style.padding = '5px 10px';
+      bookmarkBtn.style.cursor = 'pointer';
+      bookmarkBtn.addEventListener('click', addBookmark);
+      verseDisplay.style.position = 'relative';
+      verseDisplay.appendChild(bookmarkBtn);
+      
+      setupTabs();
+      setupSearch();
+      setupBookmarks();
+      setupNotes();
+    }
     
     // Initialize everything
-    document.addEventListener('DOMContentLoaded', () => {
-      initializeApp();
-      setupTabs();
-    });
+    document.addEventListener('DOMContentLoaded', initializeApp);
   </script>
 </body>
 </html>
