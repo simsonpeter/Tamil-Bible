@@ -75,27 +75,24 @@
   </div>
 
   <script>
-    let bookList = []; // Will store processed book info
+    let bookList = [];
     
     async function init() {
       try {
-        // Load Books.json
         const response = await fetch('Books.json');
         if (!response.ok) throw new Error('Books.json not found');
         
         const rawData = await response.json();
-        
-        // Process into simple array: { id, english, tamil }
         bookList = rawData.map((item, index) => ({
-          id: (index + 1).toString(), // 1 to 66
+          id: (index + 1).toString(),
           english: item.book.english,
-          tamil: item.book.tamil.trim() // Remove trailing space
+          tamil: item.book.tamil.trim()
         }));
         
         populateBooks();
       } catch (err) {
         document.getElementById('verses').innerHTML = 
-          `<p style="color:red;">பிழை: ${err.message}<br>Books.json கோப்பை சரிபார்க்கவும்.</p>`;
+          `<p style="color:red;">பிழை: ${err.message}</p>`;
         console.error(err);
       }
     }
@@ -103,7 +100,6 @@
     function populateBooks() {
       const sel = document.getElementById('book');
       sel.innerHTML = '<option value="">புத்தகம்</option>';
-      
       bookList.forEach(book => {
         const opt = document.createElement('option');
         opt.value = book.id;
@@ -112,18 +108,34 @@
       });
     }
     
-    // Get filename from book ID
-    function getFilename(bookId) {
-      const book = bookList.find(b => b.id === bookId);
-      return book ? `${book.english}.json` : `${bookId}.json`;
+    // Convert book data to { "1": [text1, text2, ...], "2": [...] } format
+    function normalizeBookData(bookData) {
+      const normalized = {};
+      
+      if (!Array.isArray(bookData.chapters)) {
+        throw new Error('Invalid book format: chapters not found');
+      }
+      
+      bookData.chapters.forEach(ch => {
+        const chapNum = ch.chapter;
+        if (Array.isArray(ch.verses)) {
+          normalized[chapNum] = ch.verses.map(v => v.text);
+        }
+      });
+      
+      return normalized;
     }
     
     async function loadBook(bookId) {
-      const filename = getFilename(bookId);
+      const book = bookList.find(b => b.id === bookId);
+      if (!book) throw new Error('புத்தகம் காணவில்லை');
+      
+      const filename = `${book.english}.json`;
       try {
         const res = await fetch(filename);
-        if (!res.ok) throw new Error(`கோப்பு ${filename} கிடைக்கவில்லை`);
-        return await res.json();
+        if (!res.ok) throw new Error(`${filename} கிடைக்கவில்லை`);
+        const rawData = await res.json();
+        return normalizeBookData(rawData);
       } catch (err) {
         throw new Error(`புத்தகம் ஏற்ற முடியவில்லை: ${err.message}`);
       }
@@ -134,20 +146,18 @@
       
       try {
         const bookData = await loadBook(bookId);
-        const verses = bookData[chapNum];
+        const chapterVerses = bookData[chapNum];
         
-        if (!verses || !verses.length) {
-          throw new Error('அத்தியாயம் காலியாக உள்ளது');
+        if (!chapterVerses || chapterVerses.length === 0) {
+          throw new Error(`அத்தியாயம் ${chapNum} காணவில்லை`);
         }
         
         const book = bookList.find(b => b.id === bookId);
-        const bookName = book ? book.tamil : `புத்தகம் ${bookId}`;
-        
-        document.getElementById('ref').textContent = `${bookName} ${chapNum}`;
+        document.getElementById('ref').textContent = `${book.tamil} ${chapNum}`;
         
         let html = '';
-        verses.forEach((v, i) => {
-          html += `<div class="v"><span class="vn">${i+1}</span>${v}</div>`;
+        chapterVerses.forEach((text, i) => {
+          html += `<div class="v"><span class="vn">${i+1}</span>${text}</div>`;
         });
         document.getElementById('verses').innerHTML = html;
         
@@ -157,7 +167,7 @@
       }
     }
     
-    // Event listeners
+    // Populate chapter dropdown
     document.getElementById('book').addEventListener('change', async (e) => {
       const bookId = e.target.value;
       const chapSel = document.getElementById('chapter');
@@ -167,9 +177,7 @@
       
       try {
         const bookData = await loadBook(bookId);
-        const chapters = Object.keys(bookData)
-          .map(Number)
-          .sort((a, b) => a - b);
+        const chapters = Object.keys(bookData).map(Number).sort((a, b) => a - b);
         
         chapters.forEach(ch => {
           const opt = document.createElement('option');
