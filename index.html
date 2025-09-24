@@ -308,6 +308,8 @@
     // Global data
     let booksMetadata = []; // From Books.json
     let currentTab = 'tab1'; // Track current active tab
+    let lastSearchResults = []; // Store last search results
+    let lastSearchQuery = ''; // Store last search query
     
     // Initialize the app
     async function initializeApp() {
@@ -434,7 +436,7 @@
     }
     
     // Load and display a specific verse or full chapter
-    async function loadVerse(bookId, chapterNum, verseNum) {
+    async function loadVerse(bookId, chapterNum, verseNum, showBackButton = false) {
       if (!bookId || !chapterNum) {
         document.getElementById('verseText').textContent = 'புத்தகம் மற்றும் அத்தியாயம் தேர்ந்தெடுக்கப்படவில்லை';
         document.getElementById('verseText').classList.add('placeholder');
@@ -455,10 +457,26 @@
         const book = booksMetadata.find(b => b.id === bookId);
         const referenceText = `${book.tamilName} ${chapterNum}`;
         
+        // Add back button if coming from search results
+        let backButtonHTML = '';
+        if (showBackButton && lastSearchResults.length > 1) {
+          backButtonHTML = `
+            <div style="text-align: center; margin-bottom: 15px;">
+              <button onclick="goBackToSearchResults()" 
+                      style="background: linear-gradient(135deg, #2c5aa0 0%, #1a3a6c 100%); 
+                             color: white; border: none; padding: 10px 20px; 
+                             border-radius: 8px; cursor: pointer; font-weight: 600; 
+                             font-size: 0.9rem; box-shadow: 0 3px 10px rgba(44, 90, 160, 0.3);">
+                ← தேடல் முடிவுகளுக்கு திரும்பு (${lastSearchResults.length} முடிவுகள்)
+              </button>
+            </div>
+          `;
+        }
+        
         // If no verse selected, show full chapter
         if (!verseNum || verseNum === '') {
           // Display full chapter with verse numbers
-          let chapterHTML = `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}</div>`;
+          let chapterHTML = backButtonHTML + `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}</div>`;
           
           chapterData.verses.forEach(verseObj => {
             chapterHTML += `
@@ -480,7 +498,7 @@
           }
           
           // Display single verse
-          document.getElementById('verseText').innerHTML = `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}:${verseNum}</div><div>${verseData.text}</div>`;
+          document.getElementById('verseText').innerHTML = backButtonHTML + `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}:${verseNum}</div><div>${verseData.text}</div>`;
           document.getElementById('verseText').classList.remove('full-chapter');
         }
         
@@ -605,6 +623,9 @@
         const searchResults = document.getElementById('searchResults');
         searchResults.innerHTML = '<div style="color: #666; font-size: 1rem; margin-top: 10px; text-align: center;">தேடல் செயல்படுத்தப்படுகிறது...</div>';
         
+        // Store search query
+        lastSearchQuery = query;
+        
         // Search through all books
         let foundResults = [];
         
@@ -638,6 +659,9 @@
           }
         }
         
+        // Store search results for back navigation
+        lastSearchResults = foundResults;
+        
         // Display search results
         const searchResultsDiv = document.getElementById('searchResults');
         if (foundResults.length > 0) {
@@ -648,17 +672,16 @@
             const highlightedText = result.text.replace(new RegExp(query, 'gi'), 
               `<span style="background-color: #ffeb3b; color: #2c3e50; font-weight: bold;">$&</span>`);
             
-            // Show partial text (first 100 chars) initially
-            const partialText = result.text.substring(0, 100);
-            
             resultsHTML += `
-              <div style="padding: 12px; margin: 8px 0; background: #f8f9fa; border-radius: 8px; cursor: pointer; border-left: 4px solid #2c5aa0;"
-                   onclick="toggleSearchResult(${index}, '${result.bookName}', ${result.chapter}, ${result.verse}, '${result.text.replace(/'/g, "&#39;")}', '${highlightedText.replace(/'/g, "&#39;")}', this)">
-                <div style="font-weight: bold; color: #2c3e50;">${result.reference}</div>
-                <div style="font-size: 0.95rem; color: #666; margin-top: 5px;" id="search-result-${index}">
-                  ${partialText}...
+              <div style="padding: 14px; margin: 10px 0; background: #ffffff; border-radius: 12px; cursor: pointer; border-left: 4px solid #2c5aa0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease;"
+                   onclick="loadSearchResult('${result.bookName}', ${result.chapter}, ${result.verse})"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.15)'"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                <div style="font-weight: bold; color: #1a3a6c; font-size: 1.1rem; margin-bottom: 8px;">${result.reference}</div>
+                <div style="font-size: 1rem; color: #2c3e50; line-height: 1.5; margin-bottom: 8px;">
+                  ${highlightedText}
                 </div>
-                <div style="font-size: 0.8rem; color: #2c5aa0; margin-top: 5px; font-style: italic;">(கிளிக் செய்து முழு வசனத்தையும் பார்க்கவும்)</div>
+                <div style="font-size: 0.85rem; color: #2c5aa0; font-style: italic; text-align: right;">👆 கிளிக் செய்து பார்க்கவும்</div>
               </div>
             `;
           });
@@ -672,19 +695,6 @@
       }
     }
     
-    // Toggle search result expansion
-    function toggleSearchResult(index, bookName, chapter, verse, fullText, highlightedText, element) {
-      const resultDiv = document.getElementById(`search-result-${index}`);
-      
-      // Check if currently expanded (has full text)
-      if (resultDiv.innerHTML.includes('...')) {
-        // Expand to show full text with highlights
-        resultDiv.innerHTML = highlightedText;
-      } else {
-        // Collapse back to partial text
-        resultDiv.innerHTML = fullText.substring(0, 100) + '...';
-      }
-    }
     
     // Load search result
     async function loadSearchResult(bookName, chapter, verse) {
@@ -699,13 +709,67 @@
       await populateVerseDropdown(book.id, chapter);
       document.getElementById('verseSelect').value = verse;
       
-      // Load the verse
-      loadVerse(book.id, chapter, verse);
+      // Load the verse with back button if multiple search results
+      loadVerse(book.id, chapter, verse, true);
       
-      // Switch back to main content tab
+      // Switch back to main content tab (first tab)
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(t => t.classList.remove('active'));
+      tabs[0].classList.add('active'); // First tab is the main content tab
+      currentTab = 'tab1';
+      
+      // Clear search results
+      const searchResults = document.getElementById('searchResults');
+      if (searchResults) {
+        searchResults.innerHTML = '';
+      }
+    }
+    
+    // Go back to search results
+    function goBackToSearchResults() {
+      // Switch to search tab
       const tabs = document.querySelectorAll('.tab');
       tabs.forEach(t => t.classList.remove('active'));
       document.querySelector('[data-tab="tab1"]').classList.add('active');
+      currentTab = 'tab1';
+      
+      // Restore search results
+      handleTabContent('tab1');
+      
+      // Wait for search tab to be rendered, then restore results
+      setTimeout(() => {
+        const searchResults = document.getElementById('searchResults');
+        if (searchResults && lastSearchResults.length > 0) {
+          let resultsHTML = `<div style="margin-top: 15px;"><h4 style="color: #1a3a6c; margin-bottom: 10px;">காணப்பட்ட ${lastSearchResults.length} முடிவுகள்:</h4>`;
+          
+          lastSearchResults.forEach((result, index) => {
+            // Highlight search term in text
+            const highlightedText = result.text.replace(new RegExp(lastSearchQuery, 'gi'), 
+              `<span style="background-color: #ffeb3b; color: #2c3e50; font-weight: bold;">$&</span>`);
+            
+            resultsHTML += `
+              <div style="padding: 14px; margin: 10px 0; background: #ffffff; border-radius: 12px; cursor: pointer; border-left: 4px solid #2c5aa0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease;"
+                   onclick="loadSearchResult('${result.bookName}', ${result.chapter}, ${result.verse})"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.15)'"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                <div style="font-weight: bold; color: #1a3a6c; font-size: 1.1rem; margin-bottom: 8px;">${result.reference}</div>
+                <div style="font-size: 1rem; color: #2c3e50; line-height: 1.5; margin-bottom: 8px;">
+                  ${highlightedText}
+                </div>
+                <div style="font-size: 0.85rem; color: #2c5aa0; font-style: italic; text-align: right;">👆 கிளிக் செய்து பார்க்கவும்</div>
+              </div>
+            `;
+          });
+          resultsHTML += '</div>';
+          searchResults.innerHTML = resultsHTML;
+          
+          // Restore search input
+          const searchInput = document.getElementById('searchInput');
+          if (searchInput) {
+            searchInput.value = lastSearchQuery;
+          }
+        }
+      }, 100);
     }
     
     // Bookmark functionality
@@ -813,7 +877,7 @@
     window.loadBookmark = loadBookmark;
     window.createNote = createNote;
     window.loadSearchResult = loadSearchResult;
-    window.toggleSearchResult = toggleSearchResult;
+    window.goBackToSearchResults = goBackToSearchResults;
   </script>
 </body>
 </html>
