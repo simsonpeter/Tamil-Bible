@@ -594,7 +594,9 @@
                    data-chapter="${chapterNum}" 
                    data-verse="${verseObj.verse}"
                    onclick="selectVerse('${bookId}', ${chapterNum}, ${verseObj.verse}, '${verseObj.text.replace(/'/g, "&#39;")}')"
-                   oncontextmenu="event.preventDefault(); showVersePopup(event, '${bookId}', ${chapterNum}, ${verseObj.verse}, '${verseObj.text.replace(/'/g, "&#39;")}')">
+                   oncontextmenu="event.preventDefault(); showVersePopup(event, '${bookId}', ${chapterNum}, ${verseObj.verse}, '${verseObj.text.replace(/'/g, "&#39;")}')"
+                   ontouchstart="handleTouchStart(event, '${bookId}', ${chapterNum}, ${verseObj.verse}, '${verseObj.text.replace(/'/g, "&#39;")}')"
+                   ontouchend="handleTouchEnd(event)">
                 <span class="verse-number">${verseObj.verse}</span>
                 &nbsp;&nbsp;${verseObj.text}
               </div>
@@ -1220,6 +1222,101 @@
       }
     }
     
+    // Touch event handling for mobile devices
+    let touchStartTime = 0;
+    let touchStartPos = { x: 0, y: 0 };
+    let longTouchTimer = null;
+    
+    function handleTouchStart(event, bookId, chapterNum, verseNum, verseText) {
+      touchStartTime = Date.now();
+      touchStartPos = {
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY
+      };
+      
+      // Set timer for long touch (800ms)
+      longTouchTimer = setTimeout(() => {
+        showVersePopup(event, bookId, chapterNum, verseNum, verseText);
+      }, 800);
+    }
+    
+    function handleTouchEnd(event) {
+      if (longTouchTimer) {
+        clearTimeout(longTouchTimer);
+        longTouchTimer = null;
+      }
+      
+      // If it was a quick touch (less than 300ms), treat as click
+      const touchDuration = Date.now() - touchStartTime;
+      if (touchDuration < 300) {
+        const verseElement = event.target.closest('.verse-selectable');
+        if (verseElement) {
+          const bookId = verseElement.dataset.bookId;
+          const chapter = verseElement.dataset.chapter;
+          const verse = verseElement.dataset.verse;
+          const verseText = verseElement.textContent.replace(/^\d+\.\s*/, '');
+          selectVerse(bookId, chapter, verse, verseText);
+        }
+      }
+    }
+    
+    // Improved popup positioning
+    function showVersePopup(event, bookId, chapterNum, verseNum, verseText) {
+      event.preventDefault();
+      
+      const book = booksMetadata.find(b => b.id === bookId);
+      const reference = `${book.tamilName} ${chapterNum}:${verseNum}`;
+      
+      // Update popup info
+      document.getElementById('popupVerseInfo').textContent = reference;
+      
+      // Store current selection
+      currentSelectedVerse = {
+        bookId,
+        chapter: chapterNum,
+        verse: verseNum,
+        text: verseText
+      };
+      
+      // Position popup with better positioning logic
+      const popup = document.getElementById('versePopup');
+      const rect = event.target.getBoundingClientRect();
+      const popupWidth = 200;
+      const popupHeight = 200;
+      
+      let x = rect.left + (rect.width / 2) - (popupWidth / 2);
+      let y = rect.top - popupHeight - 10;
+      
+      // Adjust if popup goes off screen
+      if (x < 10) x = 10;
+      if (x + popupWidth > window.innerWidth - 10) {
+        x = window.innerWidth - popupWidth - 10;
+      }
+      if (y < 10) {
+        y = rect.bottom + 10;
+      }
+      
+      popup.style.left = x + 'px';
+      popup.style.top = y + 'px';
+      popup.style.display = 'block';
+      
+      // Highlight verse
+      selectVerse(bookId, chapterNum, verseNum, verseText);
+      
+      // Add click outside to close
+      setTimeout(() => {
+        document.addEventListener('click', closePopupOnClickOutside);
+      }, 100);
+    }
+    
+    function closePopupOnClickOutside(event) {
+      const popup = document.getElementById('versePopup');
+      if (!popup.contains(event.target)) {
+        closeVersePopup();
+        document.removeEventListener('click', closePopupOnClickOutside);
+      }
+    }
+    
     // Remove from favorites functionality
     function removeFromFavorites(index) {
       if (confirm('இந்த வசனத்தை விருப்புபட்டியலிலிருந்து நீக்க விரும்புகிறீர்களா?')) {
@@ -1248,6 +1345,9 @@
     window.addSelectedToFavorites = addSelectedToFavorites;
     window.addNoteToSelectedVerse = addNoteToSelectedVerse;
     window.removeFromFavorites = removeFromFavorites;
+    window.handleTouchStart = handleTouchStart;
+    window.handleTouchEnd = handleTouchEnd;
+    window.closePopupOnClickOutside = closePopupOnClickOutside;
   </script>
 </body>
 </html>
