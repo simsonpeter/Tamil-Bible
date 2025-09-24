@@ -167,13 +167,13 @@
   </div>
 
   <script>
-    let books = {};
+    let bookList = []; // Will store array of {id, name}
     
-    // Load Books.json
+    // Load Books.json (which is an array)
     async function init() {
       try {
         const res = await fetch('Books.json');
-        books = await res.json();
+        bookList = await res.json();
         renderBooks();
       } catch (e) {
         document.getElementById('verses').innerHTML = 
@@ -184,12 +184,16 @@
     function renderBooks() {
       const sel = document.getElementById('book');
       sel.innerHTML = '<option value="">புத்தகம்</option>';
-      for (let i = 1; i <= 66; i++) {
+      
+      // Sort by id (as number)
+      const sortedBooks = [...bookList].sort((a, b) => parseInt(a.id) - parseInt(b.id));
+      
+      sortedBooks.forEach(book => {
         const opt = document.createElement('option');
-        opt.value = i;
-        opt.textContent = books[i] || `புத்தகம் ${i}`;
+        opt.value = book.id; // e.g., "1"
+        opt.textContent = book.name; // e.g., "ஆதியாகமம்"
         sel.appendChild(opt);
-      }
+      });
     }
     
     async function loadBook(bookId) {
@@ -213,7 +217,11 @@
           throw new Error('அத்தியாயம் காலியாக உள்ளது');
         }
         
-        document.getElementById('ref').textContent = `${books[bookId]} ${chapNum}`;
+        // Find book name from bookList
+        const book = bookList.find(b => b.id === bookId);
+        const bookName = book ? book.name : `புத்தகம் ${bookId}`;
+        
+        document.getElementById('ref').textContent = `${bookName} ${chapNum}`;
         
         let html = '';
         verses.forEach((v, i) => {
@@ -237,7 +245,10 @@
       
       try {
         const bookData = await loadBook(bookId);
-        const chapters = Object.keys(bookData).map(Number).sort((a,b) => a-b);
+        const chapters = Object.keys(bookData)
+          .map(Number)
+          .sort((a, b) => a - b);
+        
         chapters.forEach(ch => {
           const opt = document.createElement('option');
           opt.value = ch;
