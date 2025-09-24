@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>தமிழ் பைபிள்</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f0f7ff 0%, #e6f0fa 100%);
+      color: #2c3e50;
+      font-family: 'Noto Sans Tamil', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 12px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .container { 
+      max-width: 100%; 
+      margin: 0 auto; 
+    }
+    
+    /* Row 1: Title Bar */
+    .title-bar {
+      text-align: center;
+      padding: 18px 12px;
+      margin-bottom: 16px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .title-bar h1 {
+      font-size: 2.0rem;
+      color: #1a3a6c;
+      font-weight: 700;
+    }
+    
+    .subtitle {
+      color: #4a6fa5;
+      font-size: 1.0rem;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+    
+    /* Row 2: Book Chapter Verse in single row - Always horizontal */
+    .controls-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      background: white;
+      padding: 16px;
+      border-radius: 14px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0; /* Allow flex items to shrink below content size */
+    }
+    
+    .control-label {
+      font-size: 0.95rem;
+      color: #2c5aa0;
+      margin-bottom: 6px;
+      text-align: center;
+      font-weight: 600;
+    }
+    
+    select {
+      padding: 12px 10px;
+      border: 2px solid #2c5aa0;
+      border-radius: 12px;
+      background: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #2c5aa0;
+      text-align: center;
+      min-height: 44px;
+      width: 100%;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%232c5aa0' viewBox='0 0 4 5'%3e%3cpath d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 10px;
+    }
+    
+    select:focus {
+      outline: none;
+      border-color: #1a3a6c;
+      box-shadow: 0 0 0 3px rgba(26, 58, 108, 0.2);
+    }
+    
+    /* Row 3: Verse Display */
+    .verse-display-row {
+      background: white;
+      border-radius: 14px;
+      padding: 20px 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      margin-bottom: 16px;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    
+    .verse-text {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      color: #2c3e50;
+    }
+    
+    .verse-text.placeholder {
+      color: #718096;
+      font-size: 1.0rem;
+    }
+    
+    /* Row 4: Tabs */
+    .tabs-row {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    
+    .tabs {
+      display: flex;
+      flex-wrap: nowrap; /* Prevent wrapping */
+    }
+    
+    .tab {
+      padding: 14px 10px;
+      background: #f0f7ff;
+      color: #2c5aa0;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+      text-align: center;
+      min-width: 0; /* Allow flex items to shrink */
+      border-right: 1px solid #dae5f5;
+    }
+    
+    .tab:last-child {
+      border-right: none;
+    }
+    
+    .tab.active {
+      background: #2c5aa0;
+      color: white;
+    }
+    
+    /* Prevent zoom on input focus */
+    select {
+      font-size: 16px !important;
+    }
+    
+    /* Landscape mode adjustments */
+    @media (orientation: landscape) and (max-height: 500px) {
+      .controls-row {
+        padding: 12px;
+        gap: 8px;
+      }
+      
+      .control-label {
+        font-size: 0.9rem;
+      }
+      
+      select {
+        font-size: 0.9rem;
+        padding: 10px 8px;
+        min-height: 40px;
+      }
+      
+      .verse-text {
+        font-size: 1.1rem;
+      }
+      
+      .tab {
+        font-size: 0.9rem;
+        padding: 12px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Row 1: Title Bar -->
+    <div class="title-bar">
+      <h1>தமிழ் பைபிள்</h1>
+      <div class="subtitle">Tamil Bible • தமிழ் வேதாகமம்</div>
+    </div>
+    
+    <!-- Row 2: Book, Chapter, Verse in single row -->
+    <div class="controls-row">
+      <div class="control-group">
+        <div class="control-label">புத்தகம்</div>
+        <select id="bookSelect">
+          <option value="">தேர்ந்தெடு</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <div class="control-label">அத்தியாயம்</div>
+        <select id="chapterSelect">
+          <option value="">தேர்ந்தெடு</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <div class="control-label">வசனம்</div>
+        <select id="verseSelect">
+          <option value="">தேர்ந்தெடு</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Row 3: Verse Display -->
+    <div class="verse-display-row">
+      <div class="verse-text placeholder" id="verseText">
+        புத்தகம், அத்தியாயம் மற்றும் வசனத்தைத் தேர்ந்தெடுக்கவும்
+      </div>
+    </div>
+    
+    <!-- Row 4: Tabs -->
+    <div class="tabs-row">
+      <div class="tabs">
+        <div class="tab active" data-tab="tab1">தேடு</div>
+        <div class="tab" data-tab="tab2">புக்மார்க்</div>
+        <div class="tab" data-tab="tab3">குறிப்புகள்</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global data
+    let booksMetadata = []; // From Books.json
+    
+    // Initialize the app
+    async function initializeApp() {
+      try {
+        // Load Books.json
+        const booksResponse = await fetch('Books.json');
+        if (!booksResponse.ok) {
+          throw new Error('Books.json கோப்பை ஏற்ற முடியவில்லை');
+        }
+        const booksData = await booksResponse.json();
+        
+        // Process into simple array with IDs
+        booksMetadata = booksData.map((item, index) => ({
+          id: (index + 1).toString(),
+          englishName: item.book.english,
+          tamilName: item.book.tamil.trim()
+        }));
+        
+        // Populate book dropdown
+        populateBookDropdown();
+        
+      } catch (error) {
+        document.getElementById('verseText').textContent = `பிழை: ${error.message}`;
+        console.error('Initialization error:', error);
+      }
+    }
+    
+    // Populate book dropdown
+    function populateBookDropdown() {
+      const bookSelect = document.getElementById('bookSelect');
+      bookSelect.innerHTML = '<option value="">தேர்ந்தெடு</option>';
+      
+      booksMetadata.forEach(book => {
+        const option = document.createElement('option');
+        option.value = book.id;
+        option.textContent = book.tamilName;
+        bookSelect.appendChild(option);
+      });
+    }
+    
+    // Load a specific book's data
+    async function loadBookData(bookId) {
+      const book = booksMetadata.find(b => b.id === bookId);
+      if (!book) {
+        throw new Error('தேர்ந்தெடுக்கப்பட்ட புத்தகம் காணவில்லை');
+      }
+      
+      const filename = `${book.englishName}.json`;
+      try {
+        const response = await fetch(filename);
+        if (!response.ok) {
+          throw new Error(`${filename} கோப்பு கிடைக்கவில்லை`);
+        }
+        return await response.json();
+      } catch (error) {
+        throw new Error(`புத்தகத்தை ஏற்ற முடியவில்லை: ${error.message}`);
+      }
+    }
+    
+    // Populate chapter dropdown
+    async function populateChapterDropdown(bookId) {
+      const chapterSelect = document.getElementById('chapterSelect');
+      chapterSelect.innerHTML = '<option value="">தேர்ந்தெடு</option>';
+      document.getElementById('verseSelect').innerHTML = '<option value="">தேர்ந்தெடு</option>';
+      
+      if (!bookId) return;
+      
+      try {
+        const bookData = await loadBookData(bookId);
+        
+        if (!Array.isArray(bookData.chapters)) {
+          throw new Error('அத்தியாய தரவு கிடைக்கவில்லை');
+        }
+        
+        // Extract chapter numbers and sort them
+        const chapters = bookData.chapters
+          .map(ch => ch.chapter)
+          .map(Number)
+          .sort((a, b) => a - b);
+        
+        chapters.forEach(chNum => {
+          const option = document.createElement('option');
+          option.value = chNum;
+          option.textContent = chNum;
+          chapterSelect.appendChild(option);
+        });
+        
+      } catch (error) {
+        console.warn('Chapter dropdown population failed:', error);
+      }
+    }
+    
+    // Populate verse dropdown
+    async function populateVerseDropdown(bookId, chapterNum) {
+      const verseSelect = document.getElementById('verseSelect');
+      verseSelect.innerHTML = '<option value="">தேர்ந்தெடு</option>';
+      
+      if (!bookId || !chapterNum) return;
+      
+      try {
+        const bookData = await loadBookData(bookId);
+        const chapterData = bookData.chapters.find(ch => ch.chapter == chapterNum);
+        
+        if (!chapterData || !Array.isArray(chapterData.verses)) {
+          throw new Error('வசன தரவு கிடைக்கவில்லை');
+        }
+        
+        // Extract verse numbers
+        const verses = chapterData.verses
+          .map(v => v.verse)
+          .map(Number)
+          .sort((a, b) => a - b);
+        
+        verses.forEach(vNum => {
+          const option = document.createElement('option');
+          option.value = vNum;
+          option.textContent = vNum;
+          verseSelect.appendChild(option);
+        });
+        
+      } catch (error) {
+        console.warn('Verse dropdown population failed:', error);
+      }
+    }
+    
+    // Load and display a specific verse
+    async function loadVerse(bookId, chapterNum, verseNum) {
+      if (!bookId || !chapterNum || !verseNum) {
+        document.getElementById('verseText').textContent = 'புத்தகம், அத்தியாயம் மற்றும் வசனம் தேர்ந்தெடுக்கப்படவில்லை';
+        document.getElementById('verseText').classList.add('placeholder');
+        return;
+      }
+      
+      document.getElementById('verseText').textContent = 'ஏற்றுகிறது...';
+      document.getElementById('verseText').classList.remove('placeholder');
+      
+      try {
+        const bookData = await loadBookData(bookId);
+        const chapterData = bookData.chapters.find(ch => ch.chapter == chapterNum);
+        
+        if (!chapterData || !Array.isArray(chapterData.verses)) {
+          throw new Error(`அத்தியாயம் ${chapterNum} காணவில்லை`);
+        }
+        
+        const verseData = chapterData.verses.find(v => v.verse == verseNum);
+        if (!verseData) {
+          throw new Error(`வசனம் ${verseNum} காணவில்லை`);
+        }
+        
+        // Display the verse text
+        document.getElementById('verseText').textContent = verseData.text;
+        document.getElementById('verseText').classList.remove('placeholder');
+        
+      } catch (error) {
+        document.getElementById('verseText').textContent = `பிழை: ${error.message}`;
+        document.getElementById('verseText').classList.add('placeholder');
+      }
+    }
+    
+    // Tab functionality
+    function setupTabs() {
+      const tabs = document.querySelectorAll('.tab');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Remove active class from all tabs
+          tabs.forEach(t => t.classList.remove('active'));
+          
+          // Add active class to clicked tab
+          tab.classList.add('active');
+        });
+      });
+    }
+    
+    // Event Listeners
+    document.getElementById('bookSelect').addEventListener('change', async (e) => {
+      const bookId = e.target.value;
+      await populateChapterDropdown(bookId);
+    });
+    
+    document.getElementById('chapterSelect').addEventListener('change', async (e) => {
+      const bookId = document.getElementById('bookSelect').value;
+      const chapterNum = e.target.value;
+      await populateVerseDropdown(bookId, chapterNum);
+    });
+    
+    document.getElementById('verseSelect').addEventListener('change', () => {
+      const bookId = document.getElementById('bookSelect').value;
+      const chapterNum = document.getElementById('chapterSelect').value;
+      const verseNum = document.getElementById('verseSelect').value;
+      loadVerse(bookId, chapterNum, verseNum);
+    });
+    
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeApp();
+      setupTabs();
+    });
+  </script>
+</body>
+</html>
