@@ -495,10 +495,37 @@
           `;
         }
         
+        // Add action buttons (share, bookmark, note)
+        const actionButtonsHTML = `
+          <div style="text-align: center; margin-bottom: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <button onclick="shareVerse('${bookId}', ${chapterNum}, ${verseNum || ''})" 
+                    style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
+                           color: white; border: none; padding: 8px 16px; 
+                           border-radius: 8px; cursor: pointer; font-weight: 600; 
+                           font-size: 0.85rem; box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);">
+              📤 பகிர்
+            </button>
+            <button onclick="addToFavorites('${bookId}', ${chapterNum}, ${verseNum || ''})" 
+                    style="background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%); 
+                           color: white; border: none; padding: 8px 16px; 
+                           border-radius: 8px; cursor: pointer; font-weight: 600; 
+                           font-size: 0.85rem; box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);">
+              ❤️ விருப்பம்
+            </button>
+            <button onclick="addNote('${bookId}', ${chapterNum}, ${verseNum || ''})" 
+                    style="background: linear-gradient(135deg, #6f42c1 0%, #8e44ad 100%); 
+                           color: white; border: none; padding: 8px 16px; 
+                           border-radius: 8px; cursor: pointer; font-weight: 600; 
+                           font-size: 0.85rem; box-shadow: 0 2px 8px rgba(111, 66, 193, 0.3);">
+              📝 குறிப்பு
+            </button>
+          </div>
+        `;
+        
         // If no verse selected, show full chapter
         if (!verseNum || verseNum === '') {
           // Display full chapter with verse numbers
-          let chapterHTML = backButtonHTML + `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}</div>`;
+          let chapterHTML = backButtonHTML + actionButtonsHTML + `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}</div>`;
           
           chapterData.verses.forEach(verseObj => {
             chapterHTML += `
@@ -520,7 +547,7 @@
           }
           
           // Display single verse
-          document.getElementById('verseText').innerHTML = backButtonHTML + `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}:${verseNum}</div><div>${verseData.text}</div>`;
+          document.getElementById('verseText').innerHTML = backButtonHTML + actionButtonsHTML + `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}:${verseNum}</div><div>${verseData.text}</div>`;
           document.getElementById('verseText').classList.remove('full-chapter');
         }
         
@@ -946,11 +973,112 @@
       setupTabs();
     });
     
+    // Share verse functionality
+    async function shareVerse(bookId, chapterNum, verseNum) {
+      try {
+        const book = booksMetadata.find(b => b.id === bookId);
+        const bookData = await loadBookData(bookId);
+        const chapterData = bookData.chapters.find(ch => ch.chapter == chapterNum);
+        
+        let shareText = '';
+        let reference = '';
+        
+        if (!verseNum || verseNum === '') {
+          // Share full chapter
+          reference = `${book.tamilName} ${chapterNum}`;
+          shareText = `${reference}\n\n`;
+          chapterData.verses.forEach(verseObj => {
+            shareText += `${verseObj.verse}. ${verseObj.text}\n\n`;
+          });
+        } else {
+          // Share specific verse
+          const verseData = chapterData.verses.find(v => v.verse == verseNum);
+          reference = `${book.tamilName} ${chapterNum}:${verseNum}`;
+          shareText = `${reference}\n\n${verseData.text}`;
+        }
+        
+        // Add app signature
+        shareText += `\n\n- பரிசுத்த வேதாகமம் (Tamil Bible App)`;
+        
+        // Use Web Share API if available, otherwise copy to clipboard
+        if (navigator.share) {
+          await navigator.share({
+            title: reference,
+            text: shareText
+          });
+        } else {
+          // Fallback to clipboard
+          await navigator.clipboard.writeText(shareText);
+          alert('வசனம் கிளிப்போர்டில் நகலெடுக்கப்பட்டது!');
+        }
+      } catch (error) {
+        console.error('Share error:', error);
+        alert('பகிர்வதில் பிழை: ' + error.message);
+      }
+    }
+    
+    // Add to favorites functionality
+    function addToFavorites(bookId, chapterNum, verseNum) {
+      const book = booksMetadata.find(b => b.id === bookId);
+      const reference = `${book.tamilName} ${chapterNum}${verseNum ? ':' + verseNum : ''}`;
+      
+      const favorites = JSON.parse(localStorage.getItem('bibleBookmarks') || '[]');
+      const newFavorite = {
+        bookId,
+        chapter: parseInt(chapterNum),
+        verse: verseNum ? parseInt(verseNum) : null,
+        reference,
+        preview: document.getElementById('verseText').textContent.substring(0, 100),
+        timestamp: Date.now()
+      };
+      
+      // Avoid duplicates
+      const exists = favorites.some(f => 
+        f.bookId === bookId && f.chapter === parseInt(chapterNum) && f.verse === (verseNum ? parseInt(verseNum) : null)
+      );
+      
+      if (!exists) {
+        favorites.push(newFavorite);
+        localStorage.setItem('bibleBookmarks', JSON.stringify(favorites));
+        alert('விருப்புபட்டியலில் சேர்க்கப்பட்டது!');
+      } else {
+        alert('இந்த வசனம் ஏற்கனவே விருப்புபட்டியலில் உள்ளது!');
+      }
+    }
+    
+    // Add note functionality
+    function addNote(bookId, chapterNum, verseNum) {
+      const book = booksMetadata.find(b => b.id === bookId);
+      const reference = `${book.tamilName} ${chapterNum}${verseNum ? ':' + verseNum : ''}`;
+      
+      const noteText = prompt(`குறிப்பை உள்ளிடவும் (${reference}):`);
+      if (noteText && noteText.trim()) {
+        const notes = JSON.parse(localStorage.getItem('bibleNotes') || '[]');
+        const newNote = {
+          id: Date.now().toString(),
+          bookId,
+          chapter: parseInt(chapterNum),
+          verse: verseNum ? parseInt(verseNum) : null,
+          reference,
+          text: noteText.trim(),
+          timestamp: Date.now(),
+          isFavorite: false
+        };
+        
+        notes.push(newNote);
+        localStorage.setItem('bibleNotes', JSON.stringify(notes));
+        alert('குறிப்பு சேமிக்கப்பட்டது!');
+      }
+    }
+    
     // Make functions available globally for onclick handlers
     window.loadBookmark = loadBookmark;
     window.createNote = createNote;
     window.loadSearchResult = loadSearchResult;
     window.goBackToSearchResults = goBackToSearchResults;
+    window.shareVerse = shareVerse;
+    window.addToFavorites = addToFavorites;
+    window.addNote = addNote;
   </script>
 </body>
 </html>
