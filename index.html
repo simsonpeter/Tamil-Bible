@@ -614,7 +614,19 @@
           }
           
           // Display single verse
-          document.getElementById('verseText').innerHTML = backButtonHTML + `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}:${verseNum}</div><div>${verseData.text}</div>`;
+          document.getElementById('verseText').innerHTML = backButtonHTML + 
+            `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}:${verseNum}</div>
+             <div class="chapter-verse verse-selectable" 
+                  data-book-id="${bookId}" 
+                  data-chapter="${chapterNum}" 
+                  data-verse="${verseNum}"
+                  onclick="selectVerse('${bookId}', ${chapterNum}, ${verseNum}, '${verseData.text.replace(/'/g, "&#39;")}')"
+                  oncontextmenu="event.preventDefault(); showVersePopup(event, '${bookId}', ${chapterNum}, ${verseNum}, '${verseData.text.replace(/'/g, "&#39;")}')"
+                  ontouchstart="handleTouchStart(event, '${bookId}', ${chapterNum}, ${verseNum}, '${verseData.text.replace(/'/g, "&#39;")}')"
+                  ontouchend="handleTouchEnd(event)">
+               <span class="verse-number">${verseNum}</span>
+               &nbsp;&nbsp;${verseData.text}
+             </div>`;
           document.getElementById('verseText').classList.remove('full-chapter');
         }
         
