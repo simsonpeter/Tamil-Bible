@@ -1,1 +1,269 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>தமிழ் பைபிள்</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f0f4f8 0%, #e6f0fa 100%);
+      color: #2c3e50;
+      font-family: 'Noto Sans Tamil', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.7;
+      padding: 15px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      padding: 20px 15px;
+      margin-bottom: 25px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    h1 {
+      font-size: 2.4rem;
+      color: #1a3a6c;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .subtitle {
+      color: #4a6fa5;
+      font-size: 1.15rem;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    select, button {
+      padding: 12px 18px;
+      border: 2px solid #2c5aa0;
+      border-radius: 10px;
+      background: white;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #2c5aa0;
+      cursor: pointer;
+      min-width: 140px;
+      text-align: center;
+    }
+    
+    select:focus, button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.25);
+    }
+    
+    button:hover {
+      background: #2c5aa0;
+      color: white;
+    }
+    
+    .bible-area {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+      margin-bottom: 25px;
+    }
+    
+    .ref {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #1a3a6c;
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #eaeff5;
+      font-weight: 600;
+    }
+    
+    .verses {
+      font-size: 1.25rem;
+      text-align: justify;
+    }
+    
+    .v {
+      margin-bottom: 16px;
+      position: relative;
+      padding-left: 32px;
+    }
+    
+    .vn {
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #4a6fa5;
+      font-weight: 700;
+      font-size: 0.95em;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 18px;
+      color: #5a72a0;
+      font-size: 0.95rem;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #4a6fa5;
+    }
+    
+    @media (max-width: 600px) {
+      .controls { flex-direction: column; align-items: center; }
+      select, button { width: 100%; max-width: 300px; }
+      h1 { font-size: 2rem; }
+      .verses { font-size: 1.15rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>தமிழ் பைபிள்</h1>
+      <div class="subtitle">Tamil Bible • தமிழ் வேதாகமம்</div>
+    </header>
+    
+    <div class="controls">
+      <select id="book">
+        <option value="">புத்தகம்</option>
+      </select>
+      <select id="chapter">
+        <option value="">அத்தியாயம்</option>
+      </select>
+      <button id="go">செல்</button>
+    </div>
+    
+    <div class="bible-area">
+      <div class="ref" id="ref">புத்தகம் & அத்தியாயம் தேர்ந்தெடுக்கவும்</div>
+      <div class="verses" id="verses">
+        <p>மேலே உள்ள பட்டியலிலிருந்து புத்தகம் மற்றும் அத்தியாயத்தைத் தேர்ந்தெடுத்து, "செல்" பொத்தானை அழுத்தவும்.</p>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>தமிழ் பைபிள் — கடவுளின் வார்த்தையை ஆழ்ந்து படியுங்கள்</p>
+    </div>
+  </div>
 
+  <script>
+    let books = {};
+    
+    // Load Books.json
+    async function init() {
+      try {
+        const res = await fetch('Books.json');
+        books = await res.json();
+        renderBooks();
+      } catch (e) {
+        document.getElementById('verses').innerHTML = 
+          `<p style="color:#c00;">பிழை: Books.json கோப்பை ஏற்ற முடியவில்லை. அனைத்து கோப்புகளும் ஒரே அடைவில் உள்ளதை உறுதிப்படுத்தவும்.</p>`;
+      }
+    }
+    
+    function renderBooks() {
+      const sel = document.getElementById('book');
+      sel.innerHTML = '<option value="">புத்தகம்</option>';
+      for (let i = 1; i <= 66; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = books[i] || `புத்தகம் ${i}`;
+        sel.appendChild(opt);
+      }
+    }
+    
+    async function loadBook(bookId) {
+      try {
+        const res = await fetch(`${bookId}.json`);
+        if (!res.ok) throw new Error('புத்தகம் கிடைக்கவில்லை');
+        return await res.json();
+      } catch (e) {
+        throw new Error(`புத்தகம் ${bookId} ஏற்ற முடியவில்லை`);
+      }
+    }
+    
+    async function loadChapter(bookId, chapNum) {
+      document.getElementById('verses').innerHTML = '<div class="loading">ஏற்றுகிறது...</div>';
+      
+      try {
+        const bookData = await loadBook(bookId);
+        const verses = bookData[chapNum];
+        
+        if (!verses || !verses.length) {
+          throw new Error('அத்தியாயம் காலியாக உள்ளது');
+        }
+        
+        document.getElementById('ref').textContent = `${books[bookId]} ${chapNum}`;
+        
+        let html = '';
+        verses.forEach((v, i) => {
+          html += `<div class="v"><span class="vn">${i+1}</span>${v}</div>`;
+        });
+        document.getElementById('verses').innerHTML = html;
+        
+      } catch (e) {
+        document.getElementById('verses').innerHTML = 
+          `<p style="color:#c00;">பிழை: ${e.message}</p>`;
+      }
+    }
+    
+    // Event listeners
+    document.getElementById('book').addEventListener('change', async (e) => {
+      const bookId = e.target.value;
+      const chapSel = document.getElementById('chapter');
+      chapSel.innerHTML = '<option value="">அத்தியாயம்</option>';
+      
+      if (!bookId) return;
+      
+      try {
+        const bookData = await loadBook(bookId);
+        const chapters = Object.keys(bookData).map(Number).sort((a,b) => a-b);
+        chapters.forEach(ch => {
+          const opt = document.createElement('option');
+          opt.value = ch;
+          opt.textContent = ch;
+          chapSel.appendChild(opt);
+        });
+      } catch (e) {
+        // Silently fail — user will see error when loading
+      }
+    });
+    
+    document.getElementById('go').addEventListener('click', () => {
+      const b = document.getElementById('book').value;
+      const c = document.getElementById('chapter').value;
+      if (b && c) loadChapter(b, c);
+    });
+    
+    // Auto-load when chapter selected
+    document.getElementById('chapter').addEventListener('change', () => {
+      const b = document.getElementById('book').value;
+      const c = document.getElementById('chapter').value;
+      if (b && c) loadChapter(b, c);
+    });
+    
+    // Start
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
