@@ -2,152 +2,259 @@
 <html lang="ta">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>தமிழ் பைபிள்</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      -webkit-tap-highlight-color: transparent;
+    }
+    
     body {
-      background: linear-gradient(135deg, #f8fafc 0%, #eef4fc 100%);
-      color: #2d3748;
+      background: linear-gradient(135deg, #f0f7ff 0%, #e6f0fa 100%);
+      color: #2c3e50;
       font-family: 'Noto Sans Tamil', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding: 15px;
-      line-height: 1.7;
+      padding: 12px;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .container { max-width: 950px; margin: 0 auto; }
-    header {
+    
+    .container { 
+      max-width: 100%; 
+      margin: 0 auto; 
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    /* Row 1: Title Bar */
+    .title-bar {
       text-align: center;
-      padding: 22px 15px;
-      margin-bottom: 25px;
+      padding: 16px 12px;
       background: white;
-      border-radius: 18px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      flex-shrink: 0;
     }
-    h1 {
-      font-size: 2.5rem;
-      color: #2c5282;
+    
+    .title-bar h1 {
+      font-size: 1.8rem;
+      color: #1a3a6c;
       font-weight: 700;
-      letter-spacing: -0.5px;
     }
+    
     .subtitle {
-      color: #4a5568;
-      font-size: 1.2rem;
-      margin-top: 8px;
+      color: #4a6fa5;
+      font-size: 0.95rem;
+      margin-top: 4px;
       font-weight: 500;
     }
-    .controls {
+    
+    /* Row 2: Book Chapter Verse in single row - Always horizontal */
+    .controls-row {
       display: flex;
-      gap: 12px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-    }
-    select, button {
-      padding: 12px 18px;
-      border: 2px solid #3182ce;
-      border-radius: 12px;
+      gap: 8px;
       background: white;
-      font-size: 1rem;
+      padding: 14px;
+      border-radius: 14px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0; /* Allow flex items to shrink below content size */
+    }
+    
+    .control-label {
+      font-size: 0.9rem;
+      color: #2c5aa0;
+      margin-bottom: 5px;
+      text-align: center;
       font-weight: 600;
-      color: #2b6cb0;
-      min-width: 130px;
-      text-align: center;
-      transition: all 0.2s ease;
     }
-    select:focus, button:focus {
-      outline: none;
-      border-color: #4299e1;
-      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
-    }
-    button {
-      background: #3182ce;
-      color: white;
-      cursor: pointer;
-      min-width: 100px;
-    }
-    button:hover {
-      background: #2c5282;
-      transform: translateY(-2px);
-    }
-    .bible-area {
-      background: white;
-      border-radius: 18px;
-      padding: 30px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-      margin-bottom: 25px;
-    }
-    .reference {
-      text-align: center;
-      font-size: 1.6rem;
-      color: #2c5282;
-      margin-bottom: 25px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid #ebf4ff;
-      font-weight: 700;
-    }
-    .verse-display {
-      font-size: 1.4rem;
-      text-align: justify;
-      line-height: 1.8;
-      padding: 15px;
-      background: #f8fafc;
+    
+    select {
+      padding: 11px 8px;
+      border: 2px solid #2c5aa0;
       border-radius: 12px;
-      min-height: 80px;
+      background: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #2c5aa0;
+      text-align: center;
+      min-height: 42px;
+      width: 100%;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%232c5aa0' viewBox='0 0 4 5'%3e%3cpath d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 10px;
+    }
+    
+    select:focus {
+      outline: none;
+      border-color: #1a3a6c;
+      box-shadow: 0 0 0 3px rgba(26, 58, 108, 0.2);
+    }
+    
+    /* Row 3: Verse Display - Scrollable */
+    .verse-display-row {
+      background: white;
+      border-radius: 14px;
+      padding: 18px 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100px;
+    }
+    
+    .verse-text {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: #2c3e50;
+      flex: 1;
+      overflow-y: auto; /* Only this area scrolls */
+      padding: 8px 0;
+      text-align: justify;
+    }
+    
+    .verse-text.placeholder {
+      color: #718096;
+      font-size: 1.0rem;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-    .footer {
       text-align: center;
-      padding: 20px;
-      color: #718096;
-      font-size: 1rem;
     }
-    .loading {
+    
+    /* Row 4: Tabs */
+    .tabs-row {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    
+    .tabs {
+      display: flex;
+      flex-wrap: nowrap; /* Prevent wrapping */
+    }
+    
+    .tab {
+      padding: 12px 8px;
+      background: #f0f7ff;
+      color: #2c5aa0;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
       text-align: center;
-      padding: 25px;
-      color: #4299e1;
-      font-size: 1.1rem;
+      min-width: 0; /* Allow flex items to shrink */
+      border-right: 1px solid #dae5f5;
     }
-    @media (max-width: 650px) {
-      .controls { flex-direction: column; }
-      select, button { width: 100%; max-width: 280px; }
-      h1 { font-size: 2.1rem; }
-      .verse-display { font-size: 1.25rem; }
-      .reference { font-size: 1.4rem; }
+    
+    .tab:last-child {
+      border-right: none;
+    }
+    
+    .tab.active {
+      background: #2c5aa0;
+      color: white;
+    }
+    
+    /* Prevent zoom on input focus */
+    select {
+      font-size: 16px !important;
+    }
+    
+    /* Landscape mode adjustments */
+    @media (orientation: landscape) and (max-height: 500px) {
+      .controls-row {
+        padding: 10px;
+        gap: 6px;
+      }
+      
+      .control-label {
+        font-size: 0.85rem;
+      }
+      
+      select {
+        font-size: 0.85rem;
+        padding: 9px 6px;
+        min-height: 40px;
+      }
+      
+      .verse-text {
+        font-size: 1.05rem;
+      }
+      
+      .tab {
+        font-size: 0.85rem;
+        padding: 10px 6px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
+    <!-- Row 1: Title Bar -->
+    <div class="title-bar">
       <h1>தமிழ் பைபிள்</h1>
       <div class="subtitle">Tamil Bible • தமிழ் வேதாகமம்</div>
-    </header>
-    
-    <div class="controls">
-      <select id="bookSelect">
-        <option value="">புத்தகம்</option>
-      </select>
-      <select id="chapterSelect">
-        <option value="">அத்தியாயம்</option>
-      </select>
-      <select id="verseSelect">
-        <option value="">வசனம்</option>
-      </select>
-      <button id="loadButton">காட்டு</button>
     </div>
     
-    <div class="bible-area">
-      <div class="reference" id="reference">புத்தகம், அத்தியாயம் மற்றும் வசனத்தைத் தேர்ந்தெடுக்கவும்</div>
-      <div class="verse-display" id="verseDisplay">
-        மேலே உள்ள கட்டுப்பாடுகளைப் பயன்படுத்தி புத்தகம், அத்தியாயம் மற்றும் வசனத்தைத் தேர்ந்தெடுத்து, "காட்டு" பொத்தானை அழுத்தவும்.
+    <!-- Row 2: Book, Chapter, Verse in single row -->
+    <div class="controls-row">
+      <div class="control-group">
+        <div class="control-label">புத்தகம்</div>
+        <select id="bookSelect">
+          <option value="">தேர்ந்தெடு</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <div class="control-label">அத்தியாயம்</div>
+        <select id="chapterSelect">
+          <option value="">தேர்ந்தெடு</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <div class="control-label">வசனம்</div>
+        <select id="verseSelect">
+          <option value="">தேர்ந்தெடு</option>
+        </select>
       </div>
     </div>
     
-    <div class="footer">
-      <p>தமிழ் பைபிள் — கடவுளின் வார்த்தையை ஆழ்ந்து படியுங்கள்</p>
+    <!-- Row 3: Verse Display (Scrollable) -->
+    <div class="verse-display-row">
+      <div class="verse-text placeholder" id="verseText">
+        புத்தகம், அத்தியாயம் மற்றும் வசனத்தைத் தேர்ந்தெடுக்கவும்
+      </div>
+    </div>
+    
+    <!-- Row 4: Tabs -->
+    <div class="tabs-row">
+      <div class="tabs">
+        <div class="tab active" data-tab="tab1">தேடு</div>
+        <div class="tab" data-tab="tab2">புக்மார்க்</div>
+        <div class="tab" data-tab="tab3">குறிப்புகள்</div>
+      </div>
     </div>
   </div>
 
@@ -176,7 +283,7 @@
         populateBookDropdown();
         
       } catch (error) {
-        showError(`புத்தகங்களை ஏற்றுவதில் பிழை: ${error.message}`);
+        document.getElementById('verseText').textContent = `பிழை: ${error.message}`;
         console.error('Initialization error:', error);
       }
     }
@@ -184,7 +291,7 @@
     // Populate book dropdown
     function populateBookDropdown() {
       const bookSelect = document.getElementById('bookSelect');
-      bookSelect.innerHTML = '<option value="">புத்தகம்</option>';
+      bookSelect.innerHTML = '<option value="">தேர்ந்தெடு</option>';
       
       booksMetadata.forEach(book => {
         const option = document.createElement('option');
@@ -216,8 +323,8 @@
     // Populate chapter dropdown
     async function populateChapterDropdown(bookId) {
       const chapterSelect = document.getElementById('chapterSelect');
-      chapterSelect.innerHTML = '<option value="">அத்தியாயம்</option>';
-      document.getElementById('verseSelect').innerHTML = '<option value="">வசனம்</option>';
+      chapterSelect.innerHTML = '<option value="">தேர்ந்தெடு</option>';
+      document.getElementById('verseSelect').innerHTML = '<option value="">தேர்ந்தெடு</option>';
       
       if (!bookId) return;
       
@@ -249,7 +356,7 @@
     // Populate verse dropdown
     async function populateVerseDropdown(bookId, chapterNum) {
       const verseSelect = document.getElementById('verseSelect');
-      verseSelect.innerHTML = '<option value="">வசனம்</option>';
+      verseSelect.innerHTML = '<option value="">தேர்ந்தெடு</option>';
       
       if (!bookId || !chapterNum) return;
       
@@ -282,12 +389,13 @@
     // Load and display a specific verse
     async function loadVerse(bookId, chapterNum, verseNum) {
       if (!bookId || !chapterNum || !verseNum) {
-        document.getElementById('verseDisplay').textContent = 
-          'புத்தகம், அத்தியாயம் மற்றும் வசனம் தேர்ந்தெடுக்கப்படவில்லை';
+        document.getElementById('verseText').textContent = 'புத்தகம், அத்தியாயம் மற்றும் வசனம் தேர்ந்தெடுக்கப்படவில்லை';
+        document.getElementById('verseText').classList.add('placeholder');
         return;
       }
       
-      showLoading();
+      document.getElementById('verseText').textContent = 'ஏற்றுகிறது...';
+      document.getElementById('verseText').classList.remove('placeholder');
       
       try {
         const bookData = await loadBookData(bookId);
@@ -302,27 +410,29 @@
           throw new Error(`வசனம் ${verseNum} காணவில்லை`);
         }
         
-        // Get book name for reference
-        const book = booksMetadata.find(b => b.id === bookId);
-        const referenceText = `${book.tamilName} ${chapterNum}:${verseNum}`;
-        document.getElementById('reference').textContent = referenceText;
-        
         // Display the verse text
-        document.getElementById('verseDisplay').textContent = verseData.text;
+        document.getElementById('verseText').textContent = verseData.text;
+        document.getElementById('verseText').classList.remove('placeholder');
         
       } catch (error) {
-        showError(`வசனத்தை ஏற்றுவதில் பிழை: ${error.message}`);
+        document.getElementById('verseText').textContent = `பிழை: ${error.message}`;
+        document.getElementById('verseText').classList.add('placeholder');
       }
     }
     
-    // Helper: Show loading message
-    function showLoading() {
-      document.getElementById('verseDisplay').textContent = 'ஏற்றுகிறது...';
-    }
-    
-    // Helper: Show error message
-    function showError(message) {
-      document.getElementById('verseDisplay').textContent = message;
+    // Tab functionality
+    function setupTabs() {
+      const tabs = document.querySelectorAll('.tab');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Remove active class from all tabs
+          tabs.forEach(t => t.classList.remove('active'));
+          
+          // Add active class to clicked tab
+          tab.classList.add('active');
+        });
+      });
     }
     
     // Event Listeners
@@ -341,20 +451,14 @@
       const bookId = document.getElementById('bookSelect').value;
       const chapterNum = document.getElementById('chapterSelect').value;
       const verseNum = document.getElementById('verseSelect').value;
-      if (bookId && chapterNum && verseNum) {
-        loadVerse(bookId, chapterNum, verseNum);
-      }
-    });
-    
-    document.getElementById('loadButton').addEventListener('click', () => {
-      const bookId = document.getElementById('bookSelect').value;
-      const chapterNum = document.getElementById('chapterSelect').value;
-      const verseNum = document.getElementById('verseSelect').value;
       loadVerse(bookId, chapterNum, verseNum);
     });
     
-    // Start the app when page loads
-    document.addEventListener('DOMContentLoaded', initializeApp);
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeApp();
+      setupTabs();
+    });
   </script>
 </body>
 </html>
