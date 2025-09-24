@@ -75,24 +75,27 @@
   </div>
 
   <script>
-    let bookList = [];        // from Books.json
-    let filenameMap = {};     // from bookFilenames.json
+    let bookList = []; // Will store processed book info
     
     async function init() {
       try {
-        // Load both JSON files
-        const [booksRes, filenamesRes] = await Promise.all([
-          fetch('Books.json'),
-          fetch('bookFilenames.json')
-        ]);
+        // Load Books.json
+        const response = await fetch('Books.json');
+        if (!response.ok) throw new Error('Books.json not found');
         
-        bookList = await booksRes.json();
-        filenameMap = await filenamesRes.json();
+        const rawData = await response.json();
+        
+        // Process into simple array: { id, english, tamil }
+        bookList = rawData.map((item, index) => ({
+          id: (index + 1).toString(), // 1 to 66
+          english: item.book.english,
+          tamil: item.book.tamil.trim() // Remove trailing space
+        }));
         
         populateBooks();
       } catch (err) {
         document.getElementById('verses').innerHTML = 
-          `<p style="color:red;">பிழை: ${err.message}<br>தேவையான கோப்புகள் (Books.json, bookFilenames.json) இந்த HTML உடன் ஒரே அடைவில் உள்ளதை உறுதிப்படுத்தவும்.</p>`;
+          `<p style="color:red;">பிழை: ${err.message}<br>Books.json கோப்பை சரிபார்க்கவும்.</p>`;
         console.error(err);
       }
     }
@@ -101,20 +104,18 @@
       const sel = document.getElementById('book');
       sel.innerHTML = '<option value="">புத்தகம்</option>';
       
-      // Sort by numeric ID
-      const sorted = [...bookList].sort((a, b) => parseInt(a.id) - parseInt(b.id));
-      
-      sorted.forEach(book => {
+      bookList.forEach(book => {
         const opt = document.createElement('option');
         opt.value = book.id;
-        opt.textContent = book.name;
+        opt.textContent = book.tamil;
         sel.appendChild(opt);
       });
     }
     
-    // Get actual filename from book ID
+    // Get filename from book ID
     function getFilename(bookId) {
-      return filenameMap[bookId] || `${bookId}.json`;
+      const book = bookList.find(b => b.id === bookId);
+      return book ? `${book.english}.json` : `${bookId}.json`;
     }
     
     async function loadBook(bookId) {
@@ -124,7 +125,7 @@
         if (!res.ok) throw new Error(`கோப்பு ${filename} கிடைக்கவில்லை`);
         return await res.json();
       } catch (err) {
-        throw new Error(`புத்தகம் ${bookId} (${filename}) ஏற்ற முடியவில்லை: ${err.message}`);
+        throw new Error(`புத்தகம் ஏற்ற முடியவில்லை: ${err.message}`);
       }
     }
     
@@ -140,7 +141,7 @@
         }
         
         const book = bookList.find(b => b.id === bookId);
-        const bookName = book ? book.name : `புத்தகம் ${bookId}`;
+        const bookName = book ? book.tamil : `புத்தகம் ${bookId}`;
         
         document.getElementById('ref').textContent = `${bookName} ${chapNum}`;
         
