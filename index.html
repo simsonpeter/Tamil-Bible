@@ -174,6 +174,83 @@
       /* Removed circle styling */
     }
     
+    /* Verse highlighting and selection */
+    .verse-selectable {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+    
+    .verse-selectable:hover {
+      background: linear-gradient(to right, rgba(44, 90, 160, 0.1) 0%, rgba(44, 90, 160, 0.1) 100%);
+      transform: translateX(2px);
+    }
+    
+    .verse-selected {
+      background: linear-gradient(to right, rgba(44, 90, 160, 0.2) 0%, rgba(44, 90, 160, 0.2) 100%) !important;
+      border-left: 4px solid #2c5aa0 !important;
+      transform: translateX(4px);
+      box-shadow: 0 2px 8px rgba(44, 90, 160, 0.3);
+    }
+    
+    .verse-selected .verse-number {
+      color: #1a3a6c;
+      font-weight: 900;
+    }
+    
+    /* Popup menu styles */
+    .verse-popup {
+      position: fixed;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      padding: 15px;
+      z-index: 2000;
+      display: none;
+      min-width: 200px;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .verse-popup button {
+      display: block;
+      width: 100%;
+      padding: 12px 16px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .verse-popup .share-btn {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+    }
+    
+    .verse-popup .fav-btn {
+      background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+      color: white;
+    }
+    
+    .verse-popup .note-btn {
+      background: linear-gradient(135deg, #6f42c1 0%, #8e44ad 100%);
+      color: white;
+    }
+    
+    .verse-popup button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .verse-popup .close-btn {
+      background: #6c757d;
+      color: white;
+      font-size: 0.8rem;
+      padding: 8px 12px;
+    }
+    
     /* STICKY TABS at the bottom */
     .tabs-container {
       position: fixed;
@@ -321,12 +398,22 @@
     </div>
   </div>
 
+  <!-- Verse Popup Menu -->
+  <div id="versePopup" class="verse-popup">
+    <div id="popupVerseInfo" style="font-weight: bold; margin-bottom: 10px; color: #1a3a6c;"></div>
+    <button class="share-btn" onclick="shareSelectedVerse()">📤 பகிர்</button>
+    <button class="fav-btn" onclick="addSelectedToFavorites()">❤️ விருப்பம்</button>
+    <button class="note-btn" onclick="addNoteToSelectedVerse()">📝 குறிப்பு</button>
+    <button class="close-btn" onclick="closeVersePopup()">✕ மூடு</button>
+  </div>
+
   <script>
     // Global data
     let booksMetadata = []; // From Books.json
     let currentTab = 'tab1'; // Track current active tab
     let lastSearchResults = []; // Store last search results
     let lastSearchQuery = ''; // Store last search query
+    let selectedVerses = []; // Store selected verses for sharing/favorites
     
     // Initialize the app
     async function initializeApp() {
@@ -495,41 +582,19 @@
           `;
         }
         
-        // Add action buttons (share, bookmark, note)
-        const actionButtonsHTML = `
-          <div style="text-align: center; margin-bottom: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-            <button onclick="shareVerse('${bookId}', ${chapterNum}, ${verseNum || ''})" 
-                    style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
-                           color: white; border: none; padding: 8px 16px; 
-                           border-radius: 8px; cursor: pointer; font-weight: 600; 
-                           font-size: 0.85rem; box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);">
-              📤 பகிர்
-            </button>
-            <button onclick="addToFavorites('${bookId}', ${chapterNum}, ${verseNum || ''})" 
-                    style="background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%); 
-                           color: white; border: none; padding: 8px 16px; 
-                           border-radius: 8px; cursor: pointer; font-weight: 600; 
-                           font-size: 0.85rem; box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);">
-              ❤️ விருப்பம்
-            </button>
-            <button onclick="addNote('${bookId}', ${chapterNum}, ${verseNum || ''})" 
-                    style="background: linear-gradient(135deg, #6f42c1 0%, #8e44ad 100%); 
-                           color: white; border: none; padding: 8px 16px; 
-                           border-radius: 8px; cursor: pointer; font-weight: 600; 
-                           font-size: 0.85rem; box-shadow: 0 2px 8px rgba(111, 66, 193, 0.3);">
-              📝 குறிப்பு
-            </button>
-          </div>
-        `;
-        
         // If no verse selected, show full chapter
         if (!verseNum || verseNum === '') {
           // Display full chapter with verse numbers
-          let chapterHTML = backButtonHTML + actionButtonsHTML + `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}</div>`;
+          let chapterHTML = backButtonHTML + `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}</div>`;
           
           chapterData.verses.forEach(verseObj => {
             chapterHTML += `
-              <div class="chapter-verse">
+              <div class="chapter-verse verse-selectable" 
+                   data-book-id="${bookId}" 
+                   data-chapter="${chapterNum}" 
+                   data-verse="${verseObj.verse}"
+                   onclick="selectVerse('${bookId}', ${chapterNum}, ${verseObj.verse}, '${verseObj.text.replace(/'/g, "&#39;")}')"
+                   oncontextmenu="event.preventDefault(); showVersePopup(event, '${bookId}', ${chapterNum}, ${verseObj.verse}, '${verseObj.text.replace(/'/g, "&#39;")}')">
                 <span class="verse-number">${verseObj.verse}</span>
                 &nbsp;&nbsp;${verseObj.text}
               </div>
@@ -547,7 +612,7 @@
           }
           
           // Display single verse
-          document.getElementById('verseText').innerHTML = backButtonHTML + actionButtonsHTML + `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}:${verseNum}</div><div>${verseData.text}</div>`;
+          document.getElementById('verseText').innerHTML = backButtonHTML + `<div style="text-align:center; font-weight:bold; margin-bottom:18px; color:#1a3a6c; font-size:1.2rem;">${referenceText}:${verseNum}</div><div>${verseData.text}</div>`;
           document.getElementById('verseText').classList.remove('full-chapter');
         }
         
@@ -672,10 +737,14 @@
             let bookmarkHTML = '<div style="padding: 10px;"><h3 style="margin-bottom: 15px; color: #1a3a6c; text-align: center; font-size: 1.3rem;">என் விருப்புபட்டியல்</h3>';
             bookmarks.forEach((bookmark, index) => {
               bookmarkHTML += `
-                <div style="padding: 14px; margin: 10px 0; background: #f8f9fa; border-radius: 12px; cursor: pointer; border-left: 4px solid #2c5aa0; box-shadow: 0 3px 10px rgba(0,0,0,0.08);"
+                <div style="padding: 14px; margin: 10px 0; background: #f8f9fa; border-radius: 12px; cursor: pointer; border-left: 4px solid #2c5aa0; box-shadow: 0 3px 10px rgba(0,0,0,0.08); position: relative;"
                      onclick="loadBookmark('${bookmark.bookId}', ${bookmark.chapter}, ${bookmark.verse || ''})">
                   <div style="font-weight: bold; color: #2c3e50; font-size: 1.1rem;">${bookmark.reference}</div>
                   <div style="font-size: 1rem; color: #666; margin-top: 5px;">${bookmark.preview.substring(0, 80)}...</div>
+                  <button onclick="event.stopPropagation(); removeFromFavorites(${index})" 
+                          style="position: absolute; top: 10px; right: 10px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 0.8rem; box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);">
+                    ✕
+                  </button>
                 </div>
               `;
             });
@@ -1075,6 +1144,95 @@
       }
     }
     
+    // Verse selection and popup functionality
+    let currentSelectedVerse = null;
+    
+    function selectVerse(bookId, chapterNum, verseNum, verseText) {
+      // Remove previous selection
+      document.querySelectorAll('.verse-selected').forEach(el => {
+        el.classList.remove('verse-selected');
+      });
+      
+      // Add selection to clicked verse
+      const verseElement = document.querySelector(`[data-verse="${verseNum}"]`);
+      if (verseElement) {
+        verseElement.classList.add('verse-selected');
+      }
+      
+      // Store current selection
+      currentSelectedVerse = {
+        bookId,
+        chapter: chapterNum,
+        verse: verseNum,
+        text: verseText
+      };
+    }
+    
+    function showVersePopup(event, bookId, chapterNum, verseNum, verseText) {
+      event.preventDefault();
+      
+      const book = booksMetadata.find(b => b.id === bookId);
+      const reference = `${book.tamilName} ${chapterNum}:${verseNum}`;
+      
+      // Update popup info
+      document.getElementById('popupVerseInfo').textContent = reference;
+      
+      // Store current selection
+      currentSelectedVerse = {
+        bookId,
+        chapter: chapterNum,
+        verse: verseNum,
+        text: verseText
+      };
+      
+      // Position popup
+      const popup = document.getElementById('versePopup');
+      popup.style.left = event.pageX + 'px';
+      popup.style.top = event.pageY + 'px';
+      popup.style.display = 'block';
+      
+      // Highlight verse
+      selectVerse(bookId, chapterNum, verseNum, verseText);
+    }
+    
+    function closeVersePopup() {
+      document.getElementById('versePopup').style.display = 'none';
+    }
+    
+    function shareSelectedVerse() {
+      if (currentSelectedVerse) {
+        shareVerse(currentSelectedVerse.bookId, currentSelectedVerse.chapter, currentSelectedVerse.verse);
+        closeVersePopup();
+      }
+    }
+    
+    function addSelectedToFavorites() {
+      if (currentSelectedVerse) {
+        addToFavorites(currentSelectedVerse.bookId, currentSelectedVerse.chapter, currentSelectedVerse.verse);
+        closeVersePopup();
+      }
+    }
+    
+    function addNoteToSelectedVerse() {
+      if (currentSelectedVerse) {
+        addNote(currentSelectedVerse.bookId, currentSelectedVerse.chapter, currentSelectedVerse.verse);
+        closeVersePopup();
+      }
+    }
+    
+    // Remove from favorites functionality
+    function removeFromFavorites(index) {
+      if (confirm('இந்த வசனத்தை விருப்புபட்டியலிலிருந்து நீக்க விரும்புகிறீர்களா?')) {
+        const bookmarks = JSON.parse(localStorage.getItem('bibleBookmarks') || '[]');
+        bookmarks.splice(index, 1);
+        localStorage.setItem('bibleBookmarks', JSON.stringify(bookmarks));
+        
+        // Refresh the favorites tab
+        handleTabContent('tab2');
+        alert('விருப்புபட்டியலிலிருந்து நீக்கப்பட்டது!');
+      }
+    }
+    
     // Make functions available globally for onclick handlers
     window.loadBookmark = loadBookmark;
     window.createNote = createNote;
@@ -1083,6 +1241,13 @@
     window.shareVerse = shareVerse;
     window.addToFavorites = addToFavorites;
     window.addNote = addNote;
+    window.selectVerse = selectVerse;
+    window.showVersePopup = showVersePopup;
+    window.closeVersePopup = closeVersePopup;
+    window.shareSelectedVerse = shareSelectedVerse;
+    window.addSelectedToFavorites = addSelectedToFavorites;
+    window.addNoteToSelectedVerse = addNoteToSelectedVerse;
+    window.removeFromFavorites = removeFromFavorites;
   </script>
 </body>
 </html>
