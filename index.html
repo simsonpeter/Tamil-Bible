@@ -22,7 +22,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding-top: 80px; /* Space for sticky title */
+      padding-top: 60px; /* Space for sticky title */
       padding-bottom: 70px; /* Space for sticky tabs */
     }
     
@@ -33,7 +33,7 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      padding-top: 60px; /* Additional space for title */
+      padding-top: 20px; /* Additional space for title */
     }
     
     /* STICKY Title Bar */
@@ -45,7 +45,7 @@
       text-align: center;
       padding: 8px 15px;
       background: linear-gradient(135deg, #1a3a6c 0%, #2c5aa0 100%);
-      border-radius: 0 0 16px 16px;
+      border-radius: 16px;
       box-shadow: 0 6px 20px rgba(26, 58, 108, 0.25);
       z-index: 1001;
       margin: 12px;
@@ -348,6 +348,11 @@
         // Populate book dropdown
         populateBookDropdown();
         
+        // Load last read position or default to Genesis 1
+        setTimeout(() => {
+          loadLastReadOrDefault();
+        }, 100);
+        
       } catch (error) {
         document.getElementById('verseText').textContent = `பிழை: ${error.message}`;
         console.error('Initialization error:', error);
@@ -519,9 +524,51 @@
           document.getElementById('verseText').classList.remove('full-chapter');
         }
         
+        // Save last read position
+        saveLastReadPosition(bookId, chapterNum, verseNum);
+        
       } catch (error) {
         document.getElementById('verseText').textContent = `பிழை: ${error.message}`;
         document.getElementById('verseText').classList.add('placeholder');
+      }
+    }
+    
+    // Save last read position
+    function saveLastReadPosition(bookId, chapterNum, verseNum) {
+      const lastRead = {
+        bookId: bookId,
+        chapter: chapterNum,
+        verse: verseNum || '',
+        timestamp: Date.now()
+      };
+      localStorage.setItem('lastReadPosition', JSON.stringify(lastRead));
+    }
+    
+    // Load last read position
+    function loadLastReadPosition() {
+      const lastRead = JSON.parse(localStorage.getItem('lastReadPosition') || 'null');
+      return lastRead;
+    }
+    
+    // Load last read position or default to Genesis 1
+    async function loadLastReadOrDefault() {
+      const lastRead = loadLastReadPosition();
+      
+      if (lastRead) {
+        // Load last read position
+        document.getElementById('bookSelect').value = lastRead.bookId;
+        await populateChapterDropdown(lastRead.bookId);
+        document.getElementById('chapterSelect').value = lastRead.chapter;
+        await populateVerseDropdown(lastRead.bookId, lastRead.chapter);
+        document.getElementById('verseSelect').value = lastRead.verse;
+        loadVerse(lastRead.bookId, lastRead.chapter, lastRead.verse);
+      } else {
+        // Default to Genesis 1 (bookId = "1")
+        document.getElementById('bookSelect').value = "1";
+        await populateChapterDropdown("1");
+        document.getElementById('chapterSelect').value = "1";
+        await populateVerseDropdown("1", "1");
+        loadVerse("1", "1", "");
       }
     }
     
