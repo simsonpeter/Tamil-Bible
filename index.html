@@ -285,20 +285,22 @@
     
     .offline-indicator {
       position: fixed;
-      top: 70px;
-      right: 15px;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
       background: #28a745;
       color: white;
-      padding: 8px 12px;
-      border-radius: 20px;
-      font-size: 0.8rem;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 0.9rem;
       font-weight: 600;
-      box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
       z-index: 1000;
       opacity: 0;
-      transform: translateY(-10px);
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
+      max-width: 300px;
+      text-align: center;
     }
     
     .offline-indicator.show {
