@@ -284,28 +284,29 @@
     }
     
     .offline-indicator {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #28a745;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 25px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-      z-index: 1000;
-      opacity: 0;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-      max-width: 300px;
-      text-align: center;
+      position: fixed !important;
+      bottom: 120px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      background: #28a745 !important;
+      color: white !important;
+      padding: 12px 24px !important;
+      border-radius: 30px !important;
+      font-size: 1rem !important;
+      font-weight: 600 !important;
+      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5) !important;
+      z-index: 9999 !important;
+      opacity: 0 !important;
+      transition: all 0.3s ease !important;
+      backdrop-filter: blur(10px) !important;
+      max-width: 350px !important;
+      text-align: center !important;
+      border: 2px solid rgba(255, 255, 255, 0.2) !important;
     }
     
     .offline-indicator.show {
-      opacity: 1;
-      transform: translateY(0);
+      opacity: 1 !important;
+      transform: translateX(-50%) !important;
     }
     
     /* Header Controls Styles */
