@@ -267,47 +267,6 @@
     }
     
     /* Swipe to refresh styles */
-    .swipe-refresh-indicator {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #2c5aa0, #1a3a6c);
-      transform: translateX(-100%);
-      transition: transform 0.3s ease;
-      z-index: 2000;
-    }
-    
-    .swipe-refresh-indicator.active {
-      transform: translateX(0);
-    }
-    
-    .offline-indicator {
-      position: fixed !important;
-      bottom: 120px !important;
-      left: 50% !important;
-      transform: translateX(-50%) !important;
-      background: #28a745 !important;
-      color: white !important;
-      padding: 12px 24px !important;
-      border-radius: 30px !important;
-      font-size: 1rem !important;
-      font-weight: 600 !important;
-      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5) !important;
-      z-index: 9999 !important;
-      opacity: 0 !important;
-      transition: all 0.3s ease !important;
-      backdrop-filter: blur(10px) !important;
-      max-width: 350px !important;
-      text-align: center !important;
-      border: 2px solid rgba(255, 255, 255, 0.2) !important;
-    }
-    
-    .offline-indicator.show {
-      opacity: 1 !important;
-      transform: translateX(-50%) !important;
-    }
     
     /* Header Controls Styles */
     .header-controls {
@@ -515,14 +474,6 @@
       background: rgba(39, 174, 96, 0.1);
     }
     
-    body.dark-mode .offline-indicator {
-      background: #27ae60;
-      color: white;
-    }
-    
-    body.dark-mode .swipe-refresh-indicator {
-      background: linear-gradient(90deg, #3498db, #2980b9);
-    }
     
     /* STICKY TABS at the bottom */
     .tabs-container {
@@ -689,11 +640,6 @@
     <button class="close-btn" onclick="closeVersePopup()">✕ மூடு</button>
   </div>
 
-  <!-- Swipe to refresh indicator -->
-  <div id="swipeRefreshIndicator" class="swipe-refresh-indicator"></div>
-  
-  <!-- Offline indicator -->
-  <div id="offlineIndicator" class="offline-indicator">📱 ஆஃப்லைன்</div>
 
   <script>
     // Global data
@@ -1803,7 +1749,7 @@
         // Only trigger if it's a downward swipe (not horizontal)
         if (deltaY > 50 && Math.abs(deltaX) < 100) {
           event.preventDefault();
-          showRefreshIndicator();
+          // Silent swipe detection - no notifications
         }
       }
     }
@@ -1816,26 +1762,16 @@
         if (deltaY > 100) {
           triggerRefresh();
         } else {
-          hideRefreshIndicator();
+          // Silent swipe end - no notifications
         }
       }
     }
     
-    function showRefreshIndicator() {
-      const indicator = document.getElementById('swipeRefreshIndicator');
-      indicator.classList.add('active');
-    }
-    
-    function hideRefreshIndicator() {
-      const indicator = document.getElementById('swipeRefreshIndicator');
-      indicator.classList.remove('active');
-    }
     
     async function triggerRefresh() {
       if (isRefreshing) return;
       
       isRefreshing = true;
-      showRefreshIndicator();
       
       try {
         // Clear cache and reload data
@@ -1845,12 +1781,10 @@
         // Silent success - no notifications
         
         setTimeout(() => {
-          hideRefreshIndicator();
           isRefreshing = false;
         }, 1000);
       } catch (error) {
         // Silent error handling - no notifications
-        hideRefreshIndicator();
         isRefreshing = false;
       }
     }
@@ -1861,13 +1795,6 @@
       // No notifications - silent operation
     }
     
-    function showOfflineIndicator(text, color) {
-      // Disabled - no more notifications
-    }
-    
-    function hideOfflineIndicator() {
-      // Disabled - no more notifications
-    }
     
     // Preload all books for offline use
     async function preloadAllBooks() {
