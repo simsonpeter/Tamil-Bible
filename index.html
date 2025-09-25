@@ -1842,49 +1842,37 @@
         cachedBooks.clear();
         await initializeApp();
         
-        // Show success message
-        showOfflineIndicator('🔄 புதுப்பிக்கப்பட்டது!', '#28a745');
+        // Silent success - no notifications
         
         setTimeout(() => {
           hideRefreshIndicator();
           isRefreshing = false;
         }, 1000);
       } catch (error) {
-        showOfflineIndicator('❌ புதுப்பிப்பு தோல்வி', '#dc3545');
+        // Silent error handling - no notifications
         hideRefreshIndicator();
         isRefreshing = false;
       }
     }
     
-    // Offline detection and indicator
+    // Offline detection (no notifications)
     function updateOnlineStatus() {
-      const wasOffline = isOffline;
       isOffline = !navigator.onLine;
-      
-      if (isOffline && !wasOffline) {
-        showOfflineIndicator('📱 ஆஃப்லைன்', '#ffc107');
-      } else if (!isOffline && wasOffline) {
-        showOfflineIndicator('🌐 ஆன்லைன்', '#28a745');
-        setTimeout(() => hideOfflineIndicator(), 2000);
-      }
+      // No notifications - silent operation
     }
     
     function showOfflineIndicator(text, color) {
-      const indicator = document.getElementById('offlineIndicator');
-      indicator.textContent = text;
-      indicator.style.background = color;
-      indicator.classList.add('show');
+      // Disabled - no more notifications
     }
     
     function hideOfflineIndicator() {
-      const indicator = document.getElementById('offlineIndicator');
-      indicator.classList.remove('show');
+      // Disabled - no more notifications
     }
     
     // Preload all books for offline use
     async function preloadAllBooks() {
       try {
-        showOfflineIndicator('📥 தரவு பதிவிறக்கம்...', '#17a2b8');
+        // Silent preloading - no notifications
         
         for (const book of booksMetadata) {
           try {
@@ -1894,11 +1882,10 @@
           }
         }
         
-        showOfflineIndicator('✅ ஆஃப்லைன் தயார்!', '#28a745');
-        setTimeout(() => hideOfflineIndicator(), 3000);
+        // Silent completion - no notifications
       } catch (error) {
         console.error('Preload error:', error);
-        showOfflineIndicator('❌ பதிவிறக்கம் தோல்வி', '#dc3545');
+        // Silent error handling - no notifications
       }
     }
     
