@@ -305,6 +305,221 @@
       transform: translateY(0);
     }
     
+    /* Header Controls Styles */
+    .header-controls {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .theme-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 8px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    
+    .theme-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-50%) scale(1.1);
+    }
+    
+    /* Language Toggle Styles */
+    .language-toggle {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    .lang-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    
+    .lang-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-50%) scale(1.05);
+    }
+    
+    .lang-switch {
+      font-size: 1.1rem;
+      opacity: 0.8;
+    }
+    
+    /* DARK MODE STYLES */
+    body.dark-mode {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .title-bar {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    body.dark-mode .book-card {
+      background: rgba(44, 62, 80, 0.9);
+      border: 1px solid rgba(52, 73, 94, 0.8);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    body.dark-mode .book-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+    }
+    
+    body.dark-mode select {
+      background: rgba(44, 62, 80, 0.9);
+      color: #e0e0e0;
+      border: 1px solid rgba(52, 73, 94, 0.8);
+    }
+    
+    body.dark-mode select:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+    
+    body.dark-mode .verse-text {
+      background: rgba(44, 62, 80, 0.7);
+      border: 1px solid rgba(52, 73, 94, 0.6);
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .chapter-verse {
+      background: rgba(44, 62, 80, 0.5);
+      border-left: 4px solid #3498db;
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .chapter-verse:hover {
+      background: rgba(52, 152, 219, 0.1);
+    }
+    
+    body.dark-mode .verse-selected {
+      background: rgba(52, 152, 219, 0.2);
+      border-left-color: #2980b9;
+    }
+    
+    body.dark-mode .verse-popup {
+      background: rgba(44, 62, 80, 0.95);
+      border: 1px solid rgba(52, 73, 94, 0.8);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    body.dark-mode .verse-popup button {
+      background: rgba(52, 73, 94, 0.8);
+      color: #e0e0e0;
+      border: 1px solid rgba(52, 73, 94, 0.6);
+    }
+    
+    body.dark-mode .verse-popup button:hover {
+      background: rgba(52, 152, 219, 0.8);
+      border-color: #3498db;
+    }
+    
+    body.dark-mode .tabs-container {
+      background: rgba(44, 62, 80, 0.95);
+      border-top: 1px solid rgba(52, 73, 94, 0.8);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    body.dark-mode .tab {
+      color: #bdc3c7;
+    }
+    
+    body.dark-mode .tab.active {
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+      color: white;
+    }
+    
+    body.dark-mode .tab-content {
+      background: rgba(44, 62, 80, 0.7);
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode input[type="text"] {
+      background: rgba(44, 62, 80, 0.9);
+      color: #e0e0e0;
+      border: 1px solid rgba(52, 73, 94, 0.8);
+    }
+    
+    body.dark-mode input[type="text"]:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+    
+    body.dark-mode .search-results {
+      background: rgba(44, 62, 80, 0.7);
+      border: 1px solid rgba(52, 73, 94, 0.6);
+    }
+    
+    body.dark-mode .search-result-item {
+      background: rgba(52, 73, 94, 0.5);
+      border-left: 4px solid #3498db;
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .search-result-item:hover {
+      background: rgba(52, 152, 219, 0.1);
+    }
+    
+    body.dark-mode .favorites-item {
+      background: rgba(52, 73, 94, 0.5);
+      border-left: 4px solid #3498db;
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .favorites-item:hover {
+      background: rgba(52, 152, 219, 0.1);
+    }
+    
+    body.dark-mode .notes-item {
+      background: rgba(52, 73, 94, 0.5);
+      border-left: 4px solid #27ae60;
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .notes-item:hover {
+      background: rgba(39, 174, 96, 0.1);
+    }
+    
+    body.dark-mode .offline-indicator {
+      background: #27ae60;
+      color: white;
+    }
+    
+    body.dark-mode .swipe-refresh-indicator {
+      background: linear-gradient(90deg, #3498db, #2980b9);
+    }
+    
     /* STICKY TABS at the bottom */
     .tabs-container {
       position: fixed;
@@ -409,9 +624,18 @@
 </head>
 <body>
   <!-- STICKY TITLE BAR -->
-  <div class="title-bar">
-    <h1>பரிசுத்த வேதாகமம்</h1>
-  </div>
+    <div class="title-bar">
+      <h1>பரிசுத்த வேதாகமம்</h1>
+      <div class="header-controls">
+        <button id="themeBtn" onclick="toggleTheme()" class="theme-btn" title="Theme">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <button id="languageBtn" onclick="toggleLanguage()" class="lang-btn">
+          <span id="currentLang">தமிழ்</span>
+          <span class="lang-switch">⇄</span>
+        </button>
+      </div>
+    </div>
 
   <div class="container">
     <!-- Row 2: Book, Chapter, Verse in single row -->
@@ -476,6 +700,82 @@
     let selectedVerses = []; // Store selected verses for sharing/favorites
     let isOffline = false; // Track offline status
     let cachedBooks = new Map(); // Cache for book data
+    let currentLanguage = 'tamil'; // Current language: 'tamil' or 'english'
+    let englishBooksMetadata = []; // English books metadata
+    let currentTheme = 'light'; // Current theme: 'light' or 'dark'
+    
+    // English Bible metadata (King James Version)
+    const englishBibleMetadata = [
+      // Old Testament
+      { id: "1", englishName: "Genesis", tamilName: "ஆதியாகமம்", chapters: 50 },
+      { id: "2", englishName: "Exodus", tamilName: "யாத்திராகமம்", chapters: 40 },
+      { id: "3", englishName: "Leviticus", tamilName: "லேவியராகமம்", chapters: 27 },
+      { id: "4", englishName: "Numbers", tamilName: "எண்ணாகமம்", chapters: 36 },
+      { id: "5", englishName: "Deuteronomy", tamilName: "உபாகமம்", chapters: 34 },
+      { id: "6", englishName: "Joshua", tamilName: "யோசுவா", chapters: 24 },
+      { id: "7", englishName: "Judges", tamilName: "நியாயாதிபதிகள்", chapters: 21 },
+      { id: "8", englishName: "Ruth", tamilName: "ரூத்", chapters: 4 },
+      { id: "9", englishName: "1 Samuel", tamilName: "1 சாமுவேல்", chapters: 31 },
+      { id: "10", englishName: "2 Samuel", tamilName: "2 சாமுவேல்", chapters: 24 },
+      { id: "11", englishName: "1 Kings", tamilName: "1 இராஜாக்கள்", chapters: 22 },
+      { id: "12", englishName: "2 Kings", tamilName: "2 இராஜாக்கள்", chapters: 25 },
+      { id: "13", englishName: "1 Chronicles", tamilName: "1 நாளாகமம்", chapters: 29 },
+      { id: "14", englishName: "2 Chronicles", tamilName: "2 நாளாகமம்", chapters: 36 },
+      { id: "15", englishName: "Ezra", tamilName: "எஸ்றா", chapters: 10 },
+      { id: "16", englishName: "Nehemiah", tamilName: "நெகேமியா", chapters: 13 },
+      { id: "17", englishName: "Esther", tamilName: "எஸ்தர்", chapters: 10 },
+      { id: "18", englishName: "Job", tamilName: "யோபு", chapters: 42 },
+      { id: "19", englishName: "Psalms", tamilName: "சங்கீதம்", chapters: 150 },
+      { id: "20", englishName: "Proverbs", tamilName: "நீதிமொழிகள்", chapters: 31 },
+      { id: "21", englishName: "Ecclesiastes", tamilName: "பிரசங்கி", chapters: 12 },
+      { id: "22", englishName: "Song of Songs", tamilName: "உன்னதப்பாட்டு", chapters: 8 },
+      { id: "23", englishName: "Isaiah", tamilName: "ஏசாயா", chapters: 66 },
+      { id: "24", englishName: "Jeremiah", tamilName: "எரேமியா", chapters: 52 },
+      { id: "25", englishName: "Lamentations", tamilName: "புலம்பல்", chapters: 5 },
+      { id: "26", englishName: "Ezekiel", tamilName: "எசேக்கியேல்", chapters: 48 },
+      { id: "27", englishName: "Daniel", tamilName: "தானியேல்", chapters: 12 },
+      { id: "28", englishName: "Hosea", tamilName: "ஓசியா", chapters: 14 },
+      { id: "29", englishName: "Joel", tamilName: "யோவேல்", chapters: 3 },
+      { id: "30", englishName: "Amos", tamilName: "ஆமோஸ்", chapters: 9 },
+      { id: "31", englishName: "Obadiah", tamilName: "ஒபதியா", chapters: 1 },
+      { id: "32", englishName: "Jonah", tamilName: "யோனா", chapters: 4 },
+      { id: "33", englishName: "Micah", tamilName: "மீகா", chapters: 7 },
+      { id: "34", englishName: "Nahum", tamilName: "நாகூம்", chapters: 3 },
+      { id: "35", englishName: "Habakkuk", tamilName: "ஆபகூக்", chapters: 3 },
+      { id: "36", englishName: "Zephaniah", tamilName: "செப்பனியா", chapters: 3 },
+      { id: "37", englishName: "Haggai", tamilName: "ஆகாய்", chapters: 2 },
+      { id: "38", englishName: "Zechariah", tamilName: "சகரியா", chapters: 14 },
+      { id: "39", englishName: "Malachi", tamilName: "மல்கியா", chapters: 4 },
+      
+      // New Testament
+      { id: "40", englishName: "Matthew", tamilName: "மத்தேயு", chapters: 28 },
+      { id: "41", englishName: "Mark", tamilName: "மாற்கு", chapters: 16 },
+      { id: "42", englishName: "Luke", tamilName: "லூக்கா", chapters: 24 },
+      { id: "43", englishName: "John", tamilName: "யோவான்", chapters: 21 },
+      { id: "44", englishName: "Acts", tamilName: "அப்போஸ்தலருடைய நடபடிகள்", chapters: 28 },
+      { id: "45", englishName: "Romans", tamilName: "ரோமர்", chapters: 16 },
+      { id: "46", englishName: "1 Corinthians", tamilName: "1 கொரிந்தியர்", chapters: 16 },
+      { id: "47", englishName: "2 Corinthians", tamilName: "2 கொரிந்தியர்", chapters: 13 },
+      { id: "48", englishName: "Galatians", tamilName: "கலாத்தியர்", chapters: 6 },
+      { id: "49", englishName: "Ephesians", tamilName: "எபேசியர்", chapters: 6 },
+      { id: "50", englishName: "Philippians", tamilName: "பிலிப்பியர்", chapters: 4 },
+      { id: "51", englishName: "Colossians", tamilName: "கொலோசியர்", chapters: 4 },
+      { id: "52", englishName: "1 Thessalonians", tamilName: "1 தெசலோனிக்கர்", chapters: 5 },
+      { id: "53", englishName: "2 Thessalonians", tamilName: "2 தெசலோனிக்கர்", chapters: 3 },
+      { id: "54", englishName: "1 Timothy", tamilName: "1 தீமோத்தேயு", chapters: 6 },
+      { id: "55", englishName: "2 Timothy", tamilName: "2 தீமோத்தேயு", chapters: 4 },
+      { id: "56", englishName: "Titus", tamilName: "தீத்து", chapters: 3 },
+      { id: "57", englishName: "Philemon", tamilName: "பிலேமோன்", chapters: 1 },
+      { id: "58", englishName: "Hebrews", tamilName: "எபிரெயர்", chapters: 13 },
+      { id: "59", englishName: "James", tamilName: "யாக்கோபு", chapters: 5 },
+      { id: "60", englishName: "1 Peter", tamilName: "1 பேதுரு", chapters: 5 },
+      { id: "61", englishName: "2 Peter", tamilName: "2 பேதுரு", chapters: 3 },
+      { id: "62", englishName: "1 John", tamilName: "1 யோவான்", chapters: 5 },
+      { id: "63", englishName: "2 John", tamilName: "2 யோவான்", chapters: 1 },
+      { id: "64", englishName: "3 John", tamilName: "3 யோவான்", chapters: 1 },
+      { id: "65", englishName: "Jude", tamilName: "யூதா", chapters: 1 },
+      { id: "66", englishName: "Revelation", tamilName: "வெளிப்படுத்தல்", chapters: 22 }
+    ];
     
     // Initialize the app
     async function initializeApp() {
@@ -496,6 +796,11 @@
         
         // Populate book dropdown
         populateBookDropdown();
+        
+        // Load theme preference
+        const savedTheme = localStorage.getItem('bibleTheme') || 'light';
+        currentTheme = savedTheme;
+        applyTheme(savedTheme);
         
         // Load last read position or default to Genesis 1
         setTimeout(() => {
@@ -532,6 +837,28 @@
         
         // Register service worker for PWA
         registerServiceWorker();
+      }
+      
+      // Theme toggle functionality
+      function toggleTheme() {
+        currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+        localStorage.setItem('bibleTheme', currentTheme);
+        applyTheme(currentTheme);
+      }
+      
+      function applyTheme(theme) {
+        const body = document.body;
+        const themeIcon = document.getElementById('themeIcon');
+        
+        if (theme === 'dark') {
+          body.classList.add('dark-mode');
+          themeIcon.textContent = '☀️';
+          themeIcon.title = 'Switch to Light Mode';
+        } else {
+          body.classList.remove('dark-mode');
+          themeIcon.textContent = '🌙';
+          themeIcon.title = 'Switch to Dark Mode';
+        }
       }
       
       // Register service worker
@@ -1607,6 +1934,8 @@
     window.handleSwipeEnd = handleSwipeEnd;
     window.triggerRefresh = triggerRefresh;
     window.preloadAllBooks = preloadAllBooks;
+    window.toggleTheme = toggleTheme;
+    window.applyTheme = applyTheme;
   </script>
 </body>
 </html>
