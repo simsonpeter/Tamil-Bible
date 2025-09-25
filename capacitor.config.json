@@ -1,0 +1,22 @@
+{
+  "appId": "com.tamilbible.app",
+  "appName": "பரிசுத்த வேதாகமம்",
+  "webDir": ".",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#2c5aa0",
+      "showSpinner": true,
+      "spinnerColor": "#ffffff"
+    }
+  }
+}

@@ -4,6 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>பரிசுத்த வேதாகமம்</title>
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2c5aa0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="தமிழ் பைபிள்">
+  
+  <!-- Icons -->
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * { 
@@ -512,9 +527,25 @@
       document.addEventListener('touchmove', handleSwipeMove, { passive: false });
       document.addEventListener('touchend', handleSwipeEnd, { passive: true });
       
-      // Initial online status check
-      updateOnlineStatus();
-    }
+        // Initial online status check
+        updateOnlineStatus();
+        
+        // Register service worker for PWA
+        registerServiceWorker();
+      }
+      
+      // Register service worker
+      function registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('sw.js')
+            .then(registration => {
+              console.log('Service Worker registered successfully:', registration);
+            })
+            .catch(error => {
+              console.log('Service Worker registration failed:', error);
+            });
+        }
+      }
     
     // Populate book dropdown
     function populateBookDropdown() {
