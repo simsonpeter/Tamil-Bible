@@ -37,7 +37,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding-top: 60px; /* Space for sticky title */
+      padding-top: 45px; /* Space for sticky title */
       padding-bottom: 70px; /* Space for sticky tabs */
     }
     
@@ -48,7 +48,7 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      padding-top: 20px; /* Additional space for title */
+      padding-top: 8px; /* Additional space for title */
     }
     
     /* STICKY Title Bar */
@@ -58,18 +58,18 @@
       left: 0;
       right: 0;
       text-align: center;
-      padding: 8px 15px;
+      padding: 6px 15px;
       background: linear-gradient(135deg, #1a3a6c 0%, #2c5aa0 100%);
       border-radius: 16px;
       box-shadow: 0 6px 20px rgba(26, 58, 108, 0.25);
       z-index: 1001;
-      margin: 12px;
+      margin: 8px;
       margin-bottom: 0;
       color: white;
     }
     
     .title-bar h1 {
-      font-size: 1.9rem;
+      font-size: 1.5rem;
       font-weight: 700;
       text-shadow: 0 2px 4px rgba(0,0,0,0.2);
       letter-spacing: 0.5px;
@@ -628,7 +628,7 @@
 </head>
 <body>
   <!-- STICKY TITLE BAR -->
-    <div class="title-bar">
+  <div class="title-bar">
       <h1>பரிசுத்த வேதாகமம்</h1>
       <div class="header-controls">
         <button id="themeBtn" onclick="toggleTheme()" class="theme-btn" title="Theme">
@@ -639,7 +639,7 @@
           <span class="lang-switch">⇄</span>
         </button>
       </div>
-    </div>
+  </div>
 
   <div class="container">
     <!-- Row 2: Book, Chapter, Verse in single row -->
@@ -875,8 +875,8 @@
             .catch(error => {
               console.log('Service Worker registration failed:', error);
             });
-        }
       }
+    }
     
     // Populate book dropdown
     function populateBookDropdown() {
