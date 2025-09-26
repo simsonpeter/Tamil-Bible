@@ -49,7 +49,9 @@
       top: 0;
       left: 0;
       right: 0;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 12px 15px; /* Increased padding for better spacing */
       background: linear-gradient(135deg, #1a3a6c 0%, #2c5aa0 100%);
       border-radius: 16px;
@@ -65,6 +67,8 @@
       text-shadow: 0 2px 4px rgba(0,0,0,0.2);
       letter-spacing: 0.5px;
       margin: 0;
+      flex: 1;
+      text-align: center;
     }
     /* Row 2: Book Chapter Verse in single row - Always horizontal */
     .controls-row {
@@ -221,62 +225,112 @@
       font-size: 0.8rem;
       padding: 8px 12px;
     }
-    /* STICKY TABS at the bottom */
-    .tabs-container {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      border-top: 1px solid #e0e0e0;
-      z-index: 1000;
-      padding: 10px 12px;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+    /* HAMBURGER MENU */
+    .hamburger-menu {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1002;
     }
-    .tabs {
+    .hamburger-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
       display: flex;
-      flex-wrap: nowrap;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      overflow: hidden;
-      border: 1px solid #e0e0e0;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
-    .tab {
-      padding: 14px 10px;
-      background: #f8f9fa;
-      color: #2c5aa0;
-      font-weight: 600;
-      font-size: 1rem;
+    .hamburger-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .hamburger-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .hamburger-icon span {
+      display: block;
+      height: 2px;
+      width: 100%;
+      background: white;
+      border-radius: 1px;
+      transition: all 0.3s ease;
+    }
+    .hamburger-icon.active span:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+    .hamburger-icon.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger-icon.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1001;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    .menu-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .menu-panel {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 280px;
+      height: 100%;
+      background: white;
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+      z-index: 1002;
+      transition: all 0.3s ease;
+      overflow-y: auto;
+      padding-top: 80px;
+    }
+    .menu-panel.active {
+      right: 0;
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #f0f0f0;
       cursor: pointer;
       transition: all 0.3s ease;
-      flex: 1;
-      text-align: center;
-      min-width: 0;
-      border-right: 1px solid #e0e0e0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2c3e50;
     }
-    .tab:last-child {
-      border-right: none;
+    .menu-item:hover {
+      background: #f8f9fa;
+      color: #2c5aa0;
     }
-    .tab.active {
+    .menu-item.active {
       background: linear-gradient(135deg, #2c5aa0 0%, #1a3a6c 100%);
       color: white;
-      box-shadow: 0 4px 12px rgba(44, 90, 160, 0.3);
     }
-    .tab:hover:not(.active) {
-      background: #e3f2fd;
-    }
-    .tab[data-tab="tab1"] {
-      color: #ff6b35 !important;
-    }
-    .tab[data-tab="tab1"].active {
-      color: white !important;
-    }
-    .tab[data-tab="tab3"] {
-      color: #28a745 !important;
-    }
-    .tab[data-tab="tab3"].active {
-      color: white !important;
+    .menu-item .icon {
+      margin-right: 12px;
+      font-size: 1.3rem;
     }
     select {
       font-size: 16px !important;
@@ -294,9 +348,16 @@
       .verse-text {
         font-size: 1.1rem;
       }
-      .tab {
-        font-size: 0.9rem;
-        padding: 12px 8px;
+      .hamburger-btn {
+        width: 35px;
+        height: 35px;
+      }
+      .hamburger-icon {
+        width: 18px;
+        height: 18px;
+      }
+      .menu-panel {
+        width: 260px;
       }
     }
     /* Additional responsive fix for small screens */
@@ -317,6 +378,16 @@
   <!-- STICKY TITLE BAR -->
   <div class="title-bar">
       <h1>பரிசுத்த வேதாகமம்</h1>
+      <!-- HAMBURGER MENU -->
+      <div class="hamburger-menu">
+        <button class="hamburger-btn" onclick="toggleHamburgerMenu()">
+          <div class="hamburger-icon" id="hamburgerIcon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
   </div>
   <div class="container">
     <!-- Row 2: Book, Chapter, Verse in single row -->
@@ -344,12 +415,22 @@
       </div>
     </div>
   </div>
-  <!-- STICKY TABS at the bottom -->
-  <div class="tabs-container">
-    <div class="tabs">
-      <div class="tab active" data-tab="tab1">🔍</div>
-      <div class="tab" data-tab="tab2">❤️</div>
-      <div class="tab" data-tab="tab3">📝</div>
+  <!-- MENU OVERLAY -->
+  <div class="menu-overlay" id="menuOverlay" onclick="closeHamburgerMenu()"></div>
+  
+  <!-- MENU PANEL -->
+  <div class="menu-panel" id="menuPanel">
+    <div class="menu-item active" data-tab="tab1" onclick="selectMenuItem('tab1')">
+      <span class="icon">🔍</span>
+      தேடல்
+    </div>
+    <div class="menu-item" data-tab="tab2" onclick="selectMenuItem('tab2')">
+      <span class="icon">❤️</span>
+      விருப்புபட்டியல்
+    </div>
+    <div class="menu-item" data-tab="tab3" onclick="selectMenuItem('tab3')">
+      <span class="icon">📝</span>
+      குறிப்புகள்
     </div>
   </div>
   <!-- Verse Popup Menu -->
@@ -674,16 +755,38 @@
         loadVerse("1", "1", "");
       }
     }
-    function setupTabs() {
-      const tabs = document.querySelectorAll('.tab');
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          tabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          currentTab = tab.dataset.tab;
-          handleTabContent(currentTab);
-        });
-      });
+    function setupHamburgerMenu() {
+      // Menu is already set up with onclick handlers
+    }
+    
+    function toggleHamburgerMenu() {
+      const overlay = document.getElementById('menuOverlay');
+      const panel = document.getElementById('menuPanel');
+      const icon = document.getElementById('hamburgerIcon');
+      
+      overlay.classList.toggle('active');
+      panel.classList.toggle('active');
+      icon.classList.toggle('active');
+    }
+    
+    function closeHamburgerMenu() {
+      const overlay = document.getElementById('menuOverlay');
+      const panel = document.getElementById('menuPanel');
+      const icon = document.getElementById('hamburgerIcon');
+      
+      overlay.classList.remove('active');
+      panel.classList.remove('active');
+      icon.classList.remove('active');
+    }
+    
+    function selectMenuItem(tabId) {
+      const menuItems = document.querySelectorAll('.menu-item');
+      menuItems.forEach(item => item.classList.remove('active'));
+      document.querySelector(`[data-tab='${tabId}']`).classList.add('active');
+      
+      currentTab = tabId;
+      handleTabContent(currentTab);
+      closeHamburgerMenu();
     }
     function handleTabContent(tabId) {
       const verseText = document.getElementById('verseText');
@@ -843,9 +946,9 @@
       await populateVerseDropdown(book.id, chapter);
       document.getElementById('verseSelect').value = verse;
       loadVerse(book.id, chapter, verse, true);
-      const tabs = document.querySelectorAll('.tab');
-      tabs.forEach(t => t.classList.remove('active'));
-      tabs[0].classList.add('active');
+      const menuItems = document.querySelectorAll('.menu-item');
+      menuItems.forEach(item => item.classList.remove('active'));
+      document.querySelector('[data-tab=\'tab1\']').classList.add('active');
       currentTab = 'tab1';
       const searchResults = document.getElementById('searchResults');
       if (searchResults) {
@@ -853,9 +956,9 @@
       }
     }
     function goBackToSearchResults() {
-      const tabs = document.querySelectorAll('.tab');
-      tabs.forEach(t => t.classList.remove('active'));
-      document.querySelector('[data-tab="tab1"]').classList.add('active');
+      const menuItems = document.querySelectorAll('.menu-item');
+      menuItems.forEach(item => item.classList.remove('active'));
+      document.querySelector('[data-tab=\'tab1\']').classList.add('active');
       currentTab = 'tab1';
       handleTabContent('tab1');
       setTimeout(() => {
@@ -924,9 +1027,9 @@
         populateVerseDropdown(bookId, chapter).then(() => {
           document.getElementById('verseSelect').value = verse || '';
           loadVerse(bookId, chapter, verse || '');
-          const tabs = document.querySelectorAll('.tab');
-          tabs.forEach(t => t.classList.remove('active'));
-          document.querySelector('[data-tab="tab1"]').classList.add('active');
+          const menuItems = document.querySelectorAll('.menu-item');
+          menuItems.forEach(item => item.classList.remove('active'));
+          document.querySelector('[data-tab=\'tab1\']').classList.add('active');
         });
       });
     }
@@ -961,7 +1064,7 @@
     });
     document.addEventListener('DOMContentLoaded', () => {
       initializeApp();
-      setupTabs();
+      setupHamburgerMenu();
     });
     async function shareVerse(bookId, chapterNum, verseNum) {
       try {
@@ -1243,6 +1346,9 @@ ${verseData.text}`;
     window.handleSwipeEnd = handleSwipeEnd;
     window.triggerRefresh = triggerRefresh;
     window.preloadAllBooks = preloadAllBooks;
+    window.toggleHamburgerMenu = toggleHamburgerMenu;
+    window.closeHamburgerMenu = closeHamburgerMenu;
+    window.selectMenuItem = selectMenuItem;
   </script>
 </body>
 </html>
